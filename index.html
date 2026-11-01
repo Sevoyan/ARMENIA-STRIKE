@@ -430,7 +430,7 @@ function update(dt){
   let mag=Math.hypot(forward,side);
   if(mag>1){forward/=mag;side/=mag}
   if(inCar){ang+=side*dt*.0028;side=0}
-  let speed=dt*(inCar?0.084:0.054);
+  let speed=dt*(inCar?0.126:0.081);
   let nx=px+(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed;
   let ny=py+(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;
   if(!wall(nx,py))px=nx;
