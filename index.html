@@ -16,7 +16,7 @@
 (()=>{const c=document.getElementById('game'),ctx=c.getContext('2d');let selectedTeam='blue',selectedMode=1,selectedMission='eliminate',missionStart=0,missionDone=false,selectedMap='district-kentron-1',W,H,dpr,playing=false,px=3.5,py=3.5,ang=0,hp=100,ammo=30,reserve=90,kills=0,wave=1,gun=0,last=0,reloading=false,fireHeld=false,joyX=0,joyY=0,drag=false,lastX=0,bots=[],corpses=[],muzzle=0,damageFlash=0,inCar=false,cars=[{x:5.5,y:1.5,color:'#b8bfc4'},{x:9.5,y:5.5,color:'#263d59'},{x:2.5,y:7.5,color:'#9a2929'}];
 const guns=[{name:'AK-47',mag:30,damage:34,rate:220},{name:'M4A1',mag:30,damage:29,rate:150},{name:'AWP',mag:5,damage:100,rate:650}];
 const defaultMap=['111111111111','100000000001','101110011101','100010000001','101010110101','100000000001','101101010101','100000000001','111111111111'];
-const cascadeMap=['111111111111','100000000001','101000000101','101000000101','101000000101','100000000001','100000000001','100000000001','111111111111'];
+const cascadeMap=['111111111111','100000000001','101000000101','101000000101','101000000101','101000000101','100000000001','100000000001','111111111111'];
 let map=defaultMap;
 function resize(){dpr=Math.min(devicePixelRatio||1,1.6);W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=true}addEventListener('resize',resize);resize();
 function wall(x,y){return map[Math.floor(y)]?.[Math.floor(x)]!=='0'}
