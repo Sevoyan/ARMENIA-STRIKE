@@ -103,7 +103,7 @@
 @keyframes feedIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
 @media(max-width:650px){.mini-wrap{top:105px;right:8px;width:112px;padding:5px}.mini-title{font-size:7px}.kill-feed{top:104px;left:8px;max-width:48vw}.kill-entry{font-size:9px;padding:5px 7px}.streak-badge{top:68px;font-size:9px}}
 
-/* QUICK WEAPON SLOTS */.weapon-slots{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:flex;gap:8px;z-index:20;pointer-events:auto}.slot{min-width:76px;padding:10px 13px;border:1px solid #d4af37;border-radius:8px;background:#101b24eF;color:#e8e3d4;font-size:11px;font-weight:900;letter-spacing:1px;box-shadow:0 3px 12px #0009}.slot.active{background:linear-gradient(135deg,#f0d27b,#b48a2e);color:#101317;border-color:#ffe39a;box-shadow:0 0 15px #d4af3755}@media(max-width:650px){.weapon-slots{bottom:24px;left:50%;gap:6px}.slot{min-width:66px;padding:9px 10px;font-size:10px}}
+/* QUICK WEAPON SLOTS */.weapon-slots{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:flex;gap:8px;z-index:20;pointer-events:auto}.slot{min-width:76px;padding:10px 13px;border:1px solid #d4af37;border-radius:8px;background:#101b24eF;color:#e8e3d4;font-size:11px;font-weight:900;letter-spacing:1px;box-shadow:0 3px 12px #0009}.weapon-slots #switch{min-width:76px;background:#25313b;color:#f4d477;border-color:#d4af37}.slot.active{background:linear-gradient(135deg,#f0d27b,#b48a2e);color:#101317;border-color:#ffe39a;box-shadow:0 0 15px #d4af3755}@media(max-width:650px){.weapon-slots{bottom:24px;left:50%;gap:6px}.slot{min-width:60px;padding:9px 8px;font-size:10px}.weapon-slots #switch{min-width:66px}}
 /* GRENADE + SNIPER SCOPE */
 .grenade-btn{position:fixed;left:50%;bottom:164px;transform:translateX(-50%);z-index:25;pointer-events:auto;border:1px solid #e2c16b;border-radius:8px;padding:8px 13px;background:#17232deF;color:#f4d477;font-size:11px;font-weight:900;box-shadow:0 3px 12px #0009}
 .grenade-btn:disabled{opacity:.45}
@@ -122,7 +122,7 @@
 <div id="killFeed" class="kill-feed"></div>
 <div id="streakBadge" class="streak-badge">🔥 0 KILL STREAK</div><div id="scopeOverlay"><i class="scope-v"></i></div><button class="grenade-btn" id="grenade">💣 GRENADE × <span id="grenadeCount">3</span></button>
 
-<div class="weapon-slots"><button class="slot active" id="slotAK">1 · AK</button><button class="slot" id="slotM4">2 · M4</button></div><div class="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div class="actions"><button class="act" id="reload">RELOAD</button><button class="act" id="switch">WEAPON</button><button class="act car" id="car">ENTER</button><button class="act fire" id="fire">FIRE</button></div></div>
+<div class="weapon-slots"><button class="slot active" id="slotAK">1 · AK</button><button class="slot" id="slotM4">2 · M4</button><button class="slot" id="switch">↻ ԶԵՆՔ</button></div><div class="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div class="actions"><button class="act" id="reload">RELOAD</button><button class="act car" id="car">ENTER</button><button class="act fire" id="fire">FIRE</button></div></div>
 <div id="start">
   <div class="menu-shell">
     <aside class="menu-brand">
