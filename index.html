@@ -47,6 +47,12 @@ function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon
  ctx.fillStyle='#777c78';ctx.fillRect(cx+cw*.39,cy+ch*.015,cw*.22,ch*.15);ctx.fillStyle='#c8c5b8';ctx.fillRect(cx+cw*.405,cy+ch*.035,cw*.19,ch*.11);ctx.fillStyle='#62777a';ctx.fillRect(cx+cw*.43,cy+ch*.05,cw*.14,ch*.075);
  ctx.fillStyle='#536d70';ctx.beginPath();ctx.ellipse(W*.5,horizon+ch*.23,cw*.18,ch*.045,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#d7d4c8';ctx.lineWidth=4;ctx.stroke();
  ctx.fillStyle='#b8c6c2';ctx.beginPath();ctx.ellipse(W*.5,horizon+ch*.23,cw*.12,ch*.025,0,0,Math.PI*2);ctx.fill();
+ // Շատրվանի ջրի շիթերը և լուսային փայլը
+ ctx.save();ctx.strokeStyle='#dce9e5';ctx.lineWidth=Math.max(2,cw*.004);for(let f=0;f<5;f++){let fx=W*.5+(f-2)*cw*.035;ctx.beginPath();ctx.moveTo(fx,horizon+ch*.22);ctx.quadraticCurveTo(fx+(f-2)*5,horizon+ch*.13,fx+(f-2)*cw*.012,horizon+ch*.075);ctx.stroke()}ctx.restore();
+ // Ծաղկանոցներ՝ Կասկադի կողային հարթակների եզրերին
+ for(let side=0;side<2;side++){let gx=side?cx+cw*.82:cx+cw*.18,gy=cy+ch*.66;ctx.fillStyle='#746b59';ctx.fillRect(gx-cw*.045,gy,cw*.09,ch*.035);for(let p=0;p<7;p++){ctx.fillStyle=['#355d3b','#416d43','#547b49'][p%3];ctx.beginPath();ctx.arc(gx-cw*.037+p*cw*.012,gy-ch*.012-(p%2)*4,Math.max(3,cw*.009),0,Math.PI*2);ctx.fill()}}
+ // Հուշարձանային քանդակներ՝ երկու կողմերի հարթակներում
+ for(let side=0;side<2;side++){let sx=cx+cw*(side?.79:.21),sy=cy+ch*.49;ctx.fillStyle='#817b6d';ctx.fillRect(sx-cw*.022,sy+ch*.045,cw*.044,ch*.018);ctx.fillStyle='#b7b0a0';ctx.beginPath();ctx.ellipse(sx,sy,cw*.018,ch*.055,side?-.12:.12,0,Math.PI*2);ctx.fill();ctx.fillStyle='#d1c9b8';ctx.beginPath();ctx.arc(sx,sy-ch*.045,cw*.014,0,Math.PI*2);ctx.fill();ctx.fillStyle='#68665e';ctx.fillRect(sx-cw*.009,sy+ch*.005,cw*.018,ch*.045)}
  // Քանդակների ու ծաղկանոցների փոքր ուրվագծեր
  for(let side=0;side<2;side++){let sx=W*(side?.78:.22),sy=horizon+ch*.13;ctx.fillStyle='#514b40';ctx.fillRect(sx-3,sy,6,ch*.08);ctx.fillStyle='#c4b9a1';ctx.beginPath();ctx.arc(sx,sy-5,Math.max(5,cw*.012),0,Math.PI*2);ctx.fill();ctx.fillStyle='#31533b';ctx.fillRect(sx-cw*.045,sy+ch*.09,cw*.09,ch*.025)}
  }else if(selectedMap==='opera'){
