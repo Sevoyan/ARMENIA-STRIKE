@@ -184,32 +184,42 @@ for(const corpse of corpses){let d=Math.hypot(corpse.x-px,corpse.y-py),a=Math.at
 for(const shot of enemyShots){let d=Math.hypot(shot.x-px,shot.y-py),a=Math.atan2(shot.y-py,shot.x-px),rel=Math.atan2(Math.sin(a-ang),Math.cos(a-ang));if(Math.abs(rel)<.7&&d<10){let sx=W/2+rel/1.15*W,sy=horizon+H*.22;ctx.save();ctx.strokeStyle='rgba(255,75,55,.9)';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(W/2,H*.54);ctx.stroke();ctx.restore()}}
 if(muzzle>0){ctx.fillStyle='#ffd36a';ctx.beginPath();ctx.moveTo(W*.77,H*.75);ctx.lineTo(W*.7,H*.55);ctx.lineTo(W*.8,H*.65);ctx.lineTo(W*.84,H*.52);ctx.lineTo(W*.83,H*.78);ctx.fill();muzzle--}
 if(damageFlash>0){ctx.fillStyle='rgba(180,0,0,'+(damageFlash/18*.25)+')';ctx.fillRect(0,0,W,H);damageFlash--}
+ if(!inCar){
  // Երրորդ դեմքի կերպար՝ ուսեր, ձեռքեր և տեսանելի զենք
  const bob=Math.sin(Date.now()*.009)*2,base=H+8;
- ctx.save();
- ctx.globalAlpha=.96;
- // մարմնի ուսային հատված
+ ctx.save();ctx.globalAlpha=.96;
  ctx.fillStyle='#10191d';ctx.beginPath();ctx.moveTo(W*.39,base);ctx.lineTo(W*.405,H*.82+bob);ctx.quadraticCurveTo(W*.5,H*.77+bob,W*.595,H*.82+bob);ctx.lineTo(W*.61,base);ctx.fill();
  ctx.fillStyle=selectedTeam==='blue'?'#285d83':'#843333';ctx.fillRect(W*.445,H*.805+bob,W*.11,H*.12);
- // գլուխը՝ հետևից
  ctx.fillStyle='#bd9879';ctx.beginPath();ctx.ellipse(W*.5,H*.79+bob,W*.038,H*.052,0,0,Math.PI*2);ctx.fill();
  ctx.fillStyle='#20272a';ctx.beginPath();ctx.arc(W*.5,H*.777+bob,W*.04,Math.PI,Math.PI*2);ctx.fill();
- // ձեռքերը
- ctx.strokeStyle='#bd9879';ctx.lineWidth=Math.max(12,W*.018);ctx.lineCap='round';
- ctx.beginPath();ctx.moveTo(W*.43,H*.84+bob);ctx.lineTo(W*.485,H*.875+bob);ctx.moveTo(W*.57,H*.84+bob);ctx.lineTo(W*.525,H*.875+bob);ctx.stroke();
- // զենք՝ կենտրոնից դեպի նշանոց
- ctx.translate(W*.5,H*.875+bob);ctx.rotate(-.12);
- ctx.fillStyle='#171b1c';ctx.fillRect(-W*.012,-H*.018,W*.12,H*.035);
- ctx.fillStyle='#394449';ctx.fillRect(W*.015,-H*.027,W*.105,H*.018);
- ctx.fillStyle='#090c0d';ctx.fillRect(W*.105,-H*.022,W*.075,H*.009);
- ctx.fillStyle='#8b9696';ctx.fillRect(W*.055,-H*.032,W*.018,H*.008);
- ctx.fillStyle='#20282b';ctx.fillRect(W*.005,-H*.002,W*.026,H*.027);
+ ctx.strokeStyle='#bd9879';ctx.lineWidth=Math.max(12,W*.018);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(W*.43,H*.84+bob);ctx.lineTo(W*.485,H*.875+bob);ctx.moveTo(W*.57,H*.84+bob);ctx.lineTo(W*.525,H*.875+bob);ctx.stroke();
+ ctx.translate(W*.5,H*.875+bob);ctx.rotate(-.12);ctx.fillStyle='#171b1c';ctx.fillRect(-W*.012,-H*.018,W*.12,H*.035);ctx.fillStyle='#394449';ctx.fillRect(W*.015,-H*.027,W*.105,H*.018);ctx.fillStyle='#090c0d';ctx.fillRect(W*.105,-H*.022,W*.075,H*.009);ctx.fillStyle='#8b9696';ctx.fillRect(W*.055,-H*.032,W*.018,H*.008);ctx.fillStyle='#20282b';ctx.fillRect(W*.005,-H*.002,W*.026,H*.027);ctx.restore();
+ }else{
+ // Մեքենայի ներսի տեսք՝ դիմապակի, կապոտ և ղեկ
+ ctx.save();
+ let shade=ctx.createLinearGradient(0,H*.57,0,H);shade.addColorStop(0,'rgba(5,10,13,0)');shade.addColorStop(1,'rgba(3,6,8,.96)');ctx.fillStyle=shade;ctx.fillRect(0,H*.56,W,H*.44);
+ // դիմապակու կողային շրջանակներ
+ ctx.fillStyle='#11191e';ctx.beginPath();ctx.moveTo(0,H*.48);ctx.lineTo(W*.075,H*.46);ctx.lineTo(W*.16,H);ctx.lineTo(0,H);ctx.fill();
+ ctx.beginPath();ctx.moveTo(W,H*.48);ctx.lineTo(W*.925,H*.46);ctx.lineTo(W*.84,H);ctx.lineTo(W,H);ctx.fill();
+ // կապոտ
+ ctx.fillStyle='#202b31';ctx.beginPath();ctx.moveTo(W*.19,H*.88);ctx.quadraticCurveTo(W*.5,H*.69,W*.81,H*.88);ctx.lineTo(W*.94,H);ctx.lineTo(W*.06,H);ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#65747a';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W*.2,H*.89);ctx.quadraticCurveTo(W*.5,H*.72,W*.8,H*.89);ctx.stroke();
+ // վահանակ
+ ctx.fillStyle='#090e12';ctx.beginPath();ctx.moveTo(0,H*.88);ctx.quadraticCurveTo(W*.5,H*.76,W,H*.88);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
+ // ղեկ
+ ctx.strokeStyle='#090b0d';ctx.lineWidth=Math.max(9,W*.018);ctx.beginPath();ctx.arc(W*.5,H*.91,Math.min(W,H)*.105,Math.PI*1.08,Math.PI*1.92);ctx.stroke();
+ ctx.strokeStyle='#66747a';ctx.lineWidth=3;ctx.beginPath();ctx.arc(W*.5,H*.91,Math.min(W,H)*.105,Math.PI*1.08,Math.PI*1.92);ctx.stroke();
+ ctx.fillStyle='#172127';ctx.beginPath();ctx.arc(W*.5,H*.91,Math.min(W,H)*.055,0,Math.PI*2);ctx.fill();
+ // վահանակի ցուցիչներ
+ ctx.fillStyle='#e8bd54';ctx.font='bold 12px Arial';ctx.fillText('DRIVE',W*.46,H*.84);
+ ctx.fillStyle='#9ce6a4';ctx.font='bold 10px Arial';ctx.fillText('●',W*.53,H*.84);
  ctx.restore();
+ }
 }
 function shoot(){if(!playing||reloading||Date.now()-last<guns[gun].rate)return;if(ammo<=0){reload();return}last=Date.now();ammo--;muzzle=3;let best=null,bd=99;for(const b of bots){let d=Math.hypot(b.x-px,b.y-py),a=Math.atan2(b.y-py,b.x-px),diff=Math.abs(Math.atan2(Math.sin(a-ang),Math.cos(a-ang)));if(diff<.075&&d<cast(a)+.3&&d<bd){best=b;bd=d}}if(best){best.h-=guns[gun].damage;best.hit=5;if(best.h<=0){corpses.push({x:best.x,y:best.y,time:Date.now()});bots=bots.filter(b=>b!==best);kills++;if(kills%5===0){wave++;hp=Math.min(100,hp+15);for(let i=0;i<2;i++)spawn()}}}if(!missionDone&&((selectedMission==='eliminate'&&kills>=10)||(selectedMission==='precision'&&kills>=5)||(selectedMission==='waves'&&wave>=4)||(selectedMission==='survive'&&Date.now()-missionStart>=90000))){missionDone=true;playing=false;document.querySelector('.panel h1').textContent='MISSION COMPLETE';document.querySelector('.panel p').textContent='Առաջադրանքը հաջողությամբ կատարված է։';document.getElementById('start').style.display='flex';document.getElementById('play').textContent='ՇԱՐՈՒՆԱԿԵԼ';}updateHud()}
 function reload(){if(reloading||ammo===guns[gun].mag||reserve<=0)return;reloading=true;document.getElementById('reload').textContent='...';setTimeout(()=>{let n=Math.min(guns[gun].mag-ammo,reserve);ammo+=n;reserve-=n;reloading=false;document.getElementById('reload').textContent='RELOAD';updateHud()},1150)}
 const keys={};addEventListener('keydown',e=>{keys[e.code]=true});addEventListener('keyup',e=>{keys[e.code]=false});addEventListener('blur',()=>{Object.keys(keys).forEach(k=>keys[k]=false)});
-function update(dt){if(!missionDone&&selectedMission==='survive'&&Date.now()-missionStart>=90000){missionDone=true;playing=false;document.querySelector('.panel h1').textContent='MISSION COMPLETE';document.querySelector('.panel p').textContent='Դու գոյատևեցիր 90 վայրկյան։';document.getElementById('start').style.display='flex';document.getElementById('play').textContent='ՇԱՐՈՒՆԱԿԵԼ';}let forward=-joyY+(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0),side=joyX+(keys.KeyD?1:0)-(keys.KeyA?1:0);let mag=Math.hypot(forward,side);if(mag>1){forward/=mag;side/=mag}let speed=dt*(inCar?0.012:0.009);let nx=px+(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed,ny=py+(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;if(!wall(nx,py))px=nx;if(!wall(px,ny))py=ny;for(const car of cars){if(Math.hypot(px-car.x,py-car.y)<.55){px-=Math.cos(ang)*(-joyY)*speed;py-=Math.sin(ang)*(-joyY)*speed;}}for(const b of bots){let d=Math.hypot(px-b.x,py-b.y);if(d>1.5){let vx=(px-b.x)/d*dt*.00012,vy=(py-b.y)/d*dt*.00012;if(d>4){if(!wall(b.x+vx,b.y))b.x+=vx;if(!wall(b.x,b.y+vy))b.y+=vy}}if(d<9&&d>1.5&&Date.now()-(b.shotAt||0)>1450){let clear=true;for(let s=.25;s<d;s+=.25){if(wall(b.x+(px-b.x)*s/d,b.y+(py-b.y)*s/d)){clear=false;break}}if(clear){b.shotAt=Date.now();enemyShots.push({x:b.x,y:b.y,life:260});if(Math.random()<.58){hp=Math.max(0,hp-6);damageFlash=18;updateHud();if(hp<=0)end()}}}if(d<=1.5&&Math.random()<.018){hp=Math.max(0,hp-5);damageFlash=18;updateHud();if(hp<=0)end()}if(b.hit>0)b.hit--}enemyShots=enemyShots.filter(s=>{s.life-=dt;return s.life>0});if(bots.length===0){wave++;for(let i=0;i<4+wave;i++)spawn();updateHud()}}
+function update(dt){if(!missionDone&&selectedMission==='survive'&&Date.now()-missionStart>=90000){missionDone=true;playing=false;document.querySelector('.panel h1').textContent='MISSION COMPLETE';document.querySelector('.panel p').textContent='Դու գոյատևեցիր 90 վայրկյան։';document.getElementById('start').style.display='flex';document.getElementById('play').textContent='ՇԱՐՈՒՆԱԿԵԼ';}let forward=-joyY+(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0),side=joyX+(keys.KeyD?1:0)-(keys.KeyA?1:0);let mag=Math.hypot(forward,side);if(mag>1){forward/=mag;side/=mag}let speed=dt*(inCar?0.012:0.009);let nx=px+(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed,ny=py+(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;if(!wall(nx,py))px=nx;if(!wall(px,ny))py=ny;if(!inCar)for(const car of cars){if(Math.hypot(px-car.x,py-car.y)<.55){px-=Math.cos(ang)*(-joyY)*speed;py-=Math.sin(ang)*(-joyY)*speed;}}for(const b of bots){let d=Math.hypot(px-b.x,py-b.y);if(d>1.5){let vx=(px-b.x)/d*dt*.00012,vy=(py-b.y)/d*dt*.00012;if(d>4){if(!wall(b.x+vx,b.y))b.x+=vx;if(!wall(b.x,b.y+vy))b.y+=vy}}if(d<9&&d>1.5&&Date.now()-(b.shotAt||0)>1450){let clear=true;for(let s=.25;s<d;s+=.25){if(wall(b.x+(px-b.x)*s/d,b.y+(py-b.y)*s/d)){clear=false;break}}if(clear){b.shotAt=Date.now();enemyShots.push({x:b.x,y:b.y,life:260});if(Math.random()<.58){hp=Math.max(0,hp-6);damageFlash=18;updateHud();if(hp<=0)end()}}}if(d<=1.5&&Math.random()<.018){hp=Math.max(0,hp-5);damageFlash=18;updateHud();if(hp<=0)end()}if(b.hit>0)b.hit--}enemyShots=enemyShots.filter(s=>{s.life-=dt;return s.life>0});if(bots.length===0){wave++;for(let i=0;i<4+wave;i++)spawn();updateHud()}}
 function loop(t){if(!playing)return;let dt=Math.min(40,t-(loop.prev||t));loop.prev=t;update(dt);draw();requestAnimationFrame(loop)}
 function end(){playing=false;document.querySelector('.panel h1').textContent='GAME OVER';document.querySelector('.panel p').innerHTML='Քո արդյունքը՝ <b>'+kills+' հակառակորդ</b><br>Ալիք՝ '+wave;document.getElementById('play').textContent='ՆՈՐԻՑ ՍԿՍԵԼ';document.getElementById('start').style.display='flex'}
 const fieldNames=['Կենտրոնական փողոցներ','Բակերի մարտադաշտ','Շենքերի միջանցք','Հին թաղամաս','Գիշերային գոտի'];
