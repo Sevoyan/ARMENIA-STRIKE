@@ -292,7 +292,46 @@ function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon
  }
  const strips=Math.ceil(W/3),zbuf=[];for(let i=0;i<strips;i++){let a=ang+(i/strips-.5)*1.15,dist=cast(a),fix=dist*Math.cos(a-ang);zbuf[i]=fix;let hh=Math.min(H*1.5,H/(fix*.85));let shade=Math.max(35,145-fix*15);let x=i*W/strips;ctx.fillStyle='rgb('+Math.floor(shade*.72)+','+Math.floor(shade*.78)+','+Math.floor(shade*.72)+')';ctx.fillRect(x,horizon-hh/2,W/strips+1,hh);if(i%24===0){ctx.fillStyle='rgba(8,13,15,.28)';ctx.fillRect(x,horizon-hh/2,2,hh)}if(i%12===0){ctx.fillStyle='rgba(224,211,177,'+Math.max(.025,.11-fix*.006)+')';ctx.fillRect(x+1,horizon-hh/2,1,hh)}if(fix<4){ctx.fillStyle='rgba(255,224,157,'+(.10*(1-fix/4))+')';ctx.fillRect(x,horizon-hh/2,W/strips+1,Math.max(1,hh*.012))}}
 let visible=bots.map(b=>({b,dist:Math.hypot(b.x-px,b.y-py),a:Math.atan2(b.y-py,b.x-px)})).sort((a,b)=>b.dist-a.dist);
-for(const car of cars){let d=Math.hypot(car.x-px,car.y-py),a=Math.atan2(car.y-py,car.x-px),rel=Math.atan2(Math.sin(a-ang),Math.cos(a-ang));if(Math.abs(rel)<.68){let sx=W/2+rel/1.15*W,idx=Math.max(0,Math.min(strips-1,Math.floor(sx/W*strips)));if(d<zbuf[idx]+.5){let size=Math.min(H*.65,H/(d*.9)),y=horizon-size*.05;ctx.fillStyle='#111';ctx.fillRect(sx-size*.45,y+size*.28,size*.9,size*.25);ctx.fillStyle=car.color;ctx.fillRect(sx-size*.48,y+size*.12,size*.96,size*.28);ctx.fillStyle='#a9d3dc';ctx.fillRect(sx-size*.27,y+size*.02,size*.54,size*.16);ctx.fillStyle='#15191b';for(let k of [-.3,.3]){ctx.beginPath();ctx.arc(sx+size*k,y+size*.4,size*.09,0,Math.PI*2);ctx.fill()}}}}for(const o of visible){let rel=Math.atan2(Math.sin(o.a-ang),Math.cos(o.a-ang));if(Math.abs(rel)>.65)continue;let sx=W/2+rel/1.15*W,idx=Math.max(0,Math.min(strips-1,Math.floor(sx/W*strips)));if(o.dist>zbuf[idx]+.3)continue;let size=Math.min(H*1.2,H/(o.dist*.72)),y=horizon-size*.42;let x=sx-size*.24;ctx.fillStyle='#171d20';ctx.fillRect(x+size*.15,y+size*.48,size*.42,size*.42);ctx.fillStyle=o.b.hit>0?'#e8b7a5':'#344b3b';ctx.fillRect(x+size*.12,y+size*.25,size*.48,size*.42);ctx.fillStyle='#b88c6a';ctx.beginPath();ctx.arc(sx,y+size*.18,size*.16,0,Math.PI*2);ctx.fill();ctx.fillStyle='#171717';ctx.fillRect(sx-size*.16,y+size*.14,size*.32,size*.045);ctx.fillStyle='#7d2020';ctx.fillRect(sx-size*.2,y+size*.02,size*.4,4);ctx.fillStyle='#52c65d';ctx.fillRect(sx-size*.2,y+size*.02,size*.4*Math.max(0,o.b.h/100),4)}
+for(const car of cars){let d=Math.hypot(car.x-px,car.y-py),a=Math.atan2(car.y-py,car.x-px),rel=Math.atan2(Math.sin(a-ang),Math.cos(a-ang));if(Math.abs(rel)<.68){let sx=W/2+rel/1.15*W,idx=Math.max(0,Math.min(strips-1,Math.floor(sx/W*strips)));if(d<zbuf[idx]+.5){let size=Math.min(H*.65,H/(d*.9)),y=horizon-size*.05;ctx.fillStyle='#111';ctx.fillRect(sx-size*.45,y+size*.28,size*.9,size*.25);ctx.fillStyle=car.color;ctx.fillRect(sx-size*.48,y+size*.12,size*.96,size*.28);ctx.fillStyle='#a9d3dc';ctx.fillRect(sx-size*.27,y+size*.02,size*.54,size*.16);ctx.fillStyle='#15191b';for(let k of [-.3,.3]){ctx.beginPath();ctx.arc(sx+size*k,y+size*.4,size*.09,0,Math.PI*2);ctx.fill()}}}}for(const o of visible){
+ let rel=Math.atan2(Math.sin(o.a-ang),Math.cos(o.a-ang));
+ if(Math.abs(rel)>.65)continue;
+ let sx=W/2+rel/1.15*W,idx=Math.max(0,Math.min(strips-1,Math.floor(sx/W*strips)));
+ if(o.dist>zbuf[idx]+.3)continue;
+ let size=Math.min(H*1.2,H/(o.dist*.72)),y=horizon-size*.42;
+ let teamColor=selectedTeam==='blue'?'#a43b35':'#286a9b';
+ ctx.save();ctx.translate(sx,y);ctx.scale(size/150,size/150);
+ // Boots and legs with knee pads
+ ctx.fillStyle='#172027';ctx.beginPath();ctx.moveTo(-22,78);ctx.lineTo(-5,78);ctx.lineTo(-10,119);ctx.lineTo(-29,119);ctx.fill();
+ ctx.beginPath();ctx.moveTo(5,78);ctx.lineTo(22,78);ctx.lineTo(29,119);ctx.lineTo(10,119);ctx.fill();
+ ctx.fillStyle='#303c3d';ctx.fillRect(-29,111,22,9);ctx.fillRect(8,111,22,9);
+ ctx.fillStyle='#171d20';ctx.fillRect(-32,119,26,10);ctx.fillRect(7,119,26,10);
+ // Tactical torso and plate carrier
+ ctx.fillStyle='#293b37';ctx.beginPath();ctx.moveTo(-29,24);ctx.lineTo(29,24);ctx.lineTo(35,81);ctx.lineTo(22,91);ctx.lineTo(-22,91);ctx.lineTo(-35,81);ctx.closePath();ctx.fill();
+ ctx.fillStyle=teamColor;ctx.fillRect(-22,37,44,8);
+ ctx.fillStyle='#526052';ctx.fillRect(-20,48,40,29);
+ ctx.fillStyle='#18262a';ctx.fillRect(-16,51,13,22);ctx.fillRect(3,51,13,22);
+ ctx.strokeStyle='#8c987e';ctx.lineWidth=2;ctx.strokeRect(-20,48,40,29);
+ // Shoulder pads and arms
+ ctx.fillStyle='#394b43';ctx.beginPath();ctx.ellipse(-31,35,12,15,-.3,0,Math.PI*2);ctx.ellipse(31,35,12,15,.3,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#344039';ctx.lineWidth=13;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-32,42);ctx.lineTo(-24,65);ctx.lineTo(-8,58);ctx.moveTo(32,42);ctx.lineTo(22,61);ctx.lineTo(8,56);ctx.stroke();
+ ctx.fillStyle='#bd916e';ctx.beginPath();ctx.arc(-8,58,6,0,Math.PI*2);ctx.arc(8,56,6,0,Math.PI*2);ctx.fill();
+ // Neck, face, balaclava and helmet
+ ctx.fillStyle='#a97d5e';ctx.fillRect(-8,16,16,12);
+ ctx.fillStyle='#b88c6a';ctx.beginPath();ctx.ellipse(0,5,17,21,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#20282a';ctx.fillRect(-15,8,30,12);
+ ctx.fillStyle='#c3a86d';ctx.beginPath();ctx.ellipse(0,-3,21,13,0,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(-21,-4,42,5);
+ ctx.fillStyle='#151d21';ctx.fillRect(-12,1,24,5);
+ // Rifle across chest
+ ctx.strokeStyle='#111719';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(-3,63);ctx.lineTo(42,44);ctx.stroke();
+ ctx.strokeStyle='#89918a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(8,57);ctx.lineTo(43,43);ctx.stroke();
+ ctx.fillStyle='#111719';ctx.fillRect(30,39,21,5);ctx.fillRect(3,60,9,13);
+ // Team patch and health bar
+ ctx.fillStyle=teamColor;ctx.fillRect(-29,30,9,12);
+ ctx.fillStyle='#191d1d';ctx.fillRect(-29,-25,58,6);
+ ctx.fillStyle='#55d46a';ctx.fillRect(-29,-25,58*Math.max(0,o.b.h/100),6);
+ if(o.b.hit>0){ctx.fillStyle='rgba(255,90,70,.25)';ctx.fillRect(-39,-29,78,150)}
+ ctx.restore();
+}
 // Հակառակորդների ընկնելու անիմացիա՝ մահացած կերպարները կարճ ժամանակ մնում են գետնին
 const now=Date.now();
 for(const g of grenades){let p=Math.min(1,(now-g.time)/g.fuse),gx=px+(g.tx-px)*p,gy=py+(g.ty-py)*p,rel=Math.atan2(Math.sin(Math.atan2(gy-py,gx-px)-ang),Math.cos(Math.atan2(gy-py,gx-px)-ang));if(Math.abs(rel)<.7){let sx=W/2+rel/1.15*W,sz=Math.max(5,18/(Math.hypot(gx-px,gy-py)+.4));ctx.fillStyle='#263b2c';ctx.beginPath();ctx.arc(sx,horizon+H*.2,sz,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#d8c77a';ctx.stroke()}}
@@ -303,15 +342,35 @@ for(const shot of enemyShots){let d=Math.hypot(shot.x-px,shot.y-py),a=Math.atan2
 if(muzzle>0){ctx.fillStyle='#ffd36a';ctx.beginPath();ctx.moveTo(W*.77,H*.75);ctx.lineTo(W*.7,H*.55);ctx.lineTo(W*.8,H*.65);ctx.lineTo(W*.84,H*.52);ctx.lineTo(W*.83,H*.78);ctx.fill();muzzle--}
 if(damageFlash>0){ctx.fillStyle='rgba(180,0,0,'+(damageFlash/18*.25)+')';ctx.fillRect(0,0,W,H);damageFlash--}
  if(!inCar){
- // Երրորդ դեմքի կերպար՝ ուսեր, ձեռքեր և տեսանելի զենք
- const bob=Math.sin(Date.now()*.009)*2,base=H+8;
- ctx.save();ctx.globalAlpha=.96;
- ctx.fillStyle='#10191d';ctx.beginPath();ctx.moveTo(W*.39,base);ctx.lineTo(W*.405,H*.82+bob);ctx.quadraticCurveTo(W*.5,H*.77+bob,W*.595,H*.82+bob);ctx.lineTo(W*.61,base);ctx.fill();
- ctx.fillStyle=selectedTeam==='blue'?'#285d83':'#843333';ctx.fillRect(W*.445,H*.805+bob,W*.11,H*.12);
- ctx.fillStyle='#bd9879';ctx.beginPath();ctx.ellipse(W*.5,H*.79+bob,W*.038,H*.052,0,0,Math.PI*2);ctx.fill();
- ctx.fillStyle='#20272a';ctx.beginPath();ctx.arc(W*.5,H*.777+bob,W*.04,Math.PI,Math.PI*2);ctx.fill();
- ctx.strokeStyle='#bd9879';ctx.lineWidth=Math.max(12,W*.018);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(W*.43,H*.84+bob);ctx.lineTo(W*.485,H*.875+bob);ctx.moveTo(W*.57,H*.84+bob);ctx.lineTo(W*.525,H*.875+bob);ctx.stroke();
- ctx.translate(W*.5,H*.875+bob);ctx.rotate(-.12);ctx.fillStyle='#171b1c';ctx.fillRect(-W*.012,-H*.018,W*.12,H*.035);ctx.fillStyle='#394449';ctx.fillRect(W*.015,-H*.027,W*.105,H*.018);ctx.fillStyle='#090c0d';ctx.fillRect(W*.105,-H*.022,W*.075,H*.009);ctx.fillStyle='#8b9696';ctx.fillRect(W*.055,-H*.032,W*.018,H*.008);ctx.fillStyle='#20282b';ctx.fillRect(W*.005,-H*.002,W*.026,H*.027);ctx.restore();
+ // Detailed first-person soldier body, tactical armor and weapon
+ const bob=Math.sin(Date.now()*.009)*2,base=H+8,uniform=selectedTeam==='blue'?'#285d83':'#843333';
+ ctx.save();ctx.globalAlpha=.99;
+ // shoulders and torso silhouette
+ ctx.fillStyle='#111a20';ctx.beginPath();ctx.moveTo(W*.34,base);ctx.lineTo(W*.375,H*.86+bob);ctx.quadraticCurveTo(W*.5,H*.75+bob,W*.625,H*.86+bob);ctx.lineTo(W*.66,base);ctx.fill();
+ ctx.fillStyle=uniform;ctx.beginPath();ctx.moveTo(W*.405,H*.83+bob);ctx.lineTo(W*.445,H*.795+bob);ctx.lineTo(W*.555,H*.795+bob);ctx.lineTo(W*.595,H*.83+bob);ctx.lineTo(W*.62,base);ctx.lineTo(W*.38,base);ctx.fill();
+ // armor vest with straps, pouches and insignia
+ ctx.fillStyle='#303d3c';ctx.beginPath();ctx.moveTo(W*.435,H*.81+bob);ctx.lineTo(W*.455,H*.79+bob);ctx.lineTo(W*.545,H*.79+bob);ctx.lineTo(W*.565,H*.81+bob);ctx.lineTo(W*.59,H*.96);ctx.lineTo(W*.41,H*.96);ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#849087';ctx.lineWidth=2;ctx.strokeRect(W*.445,H*.83+bob,W*.11,H*.105);
+ ctx.fillStyle='#172329';ctx.fillRect(W*.455,H*.85+bob,W*.035,H*.055);ctx.fillRect(W*.51,H*.85+bob,W*.035,H*.055);
+ ctx.fillStyle='#d4af37';ctx.fillRect(W*.49,H*.82+bob,W*.02,H*.012);
+ // neck and helmeted head
+ ctx.fillStyle='#a77d5e';ctx.fillRect(W*.482,H*.765+bob,W*.036,H*.04);
+ ctx.fillStyle='#b98e6b';ctx.beginPath();ctx.ellipse(W*.5,H*.75+bob,W*.042,H*.055,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#20292d';ctx.beginPath();ctx.arc(W*.5,H*.735+bob,W*.045,Math.PI,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#b59a61';ctx.beginPath();ctx.ellipse(W*.5,H*.731+bob,W*.047,H*.025,0,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(W*.453,H*.729+bob,W*.094,H*.012);
+ ctx.fillStyle='#172126';ctx.fillRect(W*.468,H*.75+bob,W*.064,H*.017);
+ // arms and gloves
+ ctx.strokeStyle='#33423e';ctx.lineWidth=Math.max(18,W*.035);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(W*.405,H*.835+bob);ctx.lineTo(W*.465,H*.88+bob);ctx.moveTo(W*.595,H*.835+bob);ctx.lineTo(W*.535,H*.88+bob);ctx.stroke();
+ ctx.fillStyle='#a77d5e';ctx.beginPath();ctx.arc(W*.465,H*.88+bob,W*.018,0,Math.PI*2);ctx.arc(W*.535,H*.88+bob,W*.018,0,Math.PI*2);ctx.fill();
+ // detailed rifle in hands
+ ctx.translate(W*.5,H*.89+bob);ctx.rotate(-.12);
+ ctx.fillStyle='#111719';ctx.fillRect(-W*.025,-H*.018,W*.16,H*.033);
+ ctx.fillStyle='#3e4948';ctx.fillRect(W*.005,-H*.03,W*.115,H*.018);
+ ctx.fillStyle='#111719';ctx.fillRect(W*.11,-H*.023,W*.095,H*.008);
+ ctx.fillStyle='#89918a';ctx.fillRect(W*.06,-H*.034,W*.022,H*.008);
+ ctx.fillStyle='#202a2b';ctx.fillRect(W*.005,-H*.002,W*.03,H*.035);
+ ctx.fillStyle='#111719';ctx.fillRect(W*.045,-H*.002,W*.012,H*.028);
+ ctx.restore();
  }else{
  // Մեքենայի ներսի տեսք՝ դիմապակի, կապոտ և ղեկ
  ctx.save();
