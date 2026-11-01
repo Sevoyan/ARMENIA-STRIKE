@@ -465,12 +465,13 @@ function update(dt){
   // Մեքենաները մնում են կայանված․ թշնամիները հետապնդում են ոտքով։
   for(const bot of bots){
     const d=Math.hypot(px-bot.x,py-bot.y);
-    if(d>4){
-      const vx=(px-bot.x)/d*dt*.00012,vy=(py-bot.y)/d*dt*.00012;
+    if(d>3){
+      // Հակառակորդները ակտիվ հետապնդում են խաղացողին, ոչ թե շատ դանդաղ տեղաշարժվում։
+      const vx=(px-bot.x)/d*dt*.00042,vy=(py-bot.y)/d*dt*.00042;
       if(!wall(bot.x+vx,bot.y))bot.x+=vx;
       if(!wall(bot.x,bot.y+vy))bot.y+=vy;
     }
-    if(d<14&&d>1.5&&Date.now()-(bot.shotAt||0)>1100){
+    if(d<24&&d>1.25&&Date.now()-(bot.shotAt||0)>850){
       let clear=true;
       for(let ray=.25;ray<d;ray+=.25){
         if(wall(bot.x+(px-bot.x)*ray/d,bot.y+(py-bot.y)*ray/d)){clear=false;break}
@@ -478,12 +479,12 @@ function update(dt){
       if(clear){
         bot.shotAt=Date.now();
         enemyShots.push({x:bot.x,y:bot.y,life:420});
-        hp=Math.max(0,hp-6);sound('hit');damageFlash=18;updateHud();
+        hp=Math.max(0,hp-8);sound('hit');damageFlash=18;updateHud();
         if(hp<=0){end();return}
       }
     }
-    if(d<=1.5&&Math.random()<.018){
-      hp=Math.max(0,hp-5);sound('hit');damageFlash=18;updateHud();
+    if(d<=1.25&&Math.random()<.045){
+      hp=Math.max(0,hp-7);sound('hit');damageFlash=18;updateHud();
       if(hp<=0){end();return}
     }
     if(bot.hit>0)bot.hit--;
