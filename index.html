@@ -430,7 +430,7 @@ function update(dt){
   let mag=Math.hypot(forward,side);
   if(mag>1){forward/=mag;side/=mag}
   if(inCar){ang+=side*dt*.0028;side=0}
-  let speed=dt*(inCar?0.014:0.009);
+  let speed=dt*(inCar?0.042:0.027);
   let nx=px+(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed;
   let ny=py+(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;
   if(!wall(nx,py))px=nx;
@@ -452,7 +452,7 @@ function update(dt){
       if(car.angle===undefined) car.angle=desired;
       let turn=Math.atan2(Math.sin(desired-car.angle),Math.cos(desired-car.angle));
       car.angle+=Math.max(-dt*.0022,Math.min(dt*.0022,turn));
-      const speed=dt*.00115;
+      const speed=dt*.00345;
       const cx=car.x+Math.cos(car.angle)*speed,cy=car.y+Math.sin(car.angle)*speed;
       if(!wall(cx,car.y)&&!cars.some(other=>other!==car&&Math.hypot(cx-other.x,car.y-other.y)<.72))car.x=cx;
       if(!wall(car.x,cy)&&!cars.some(other=>other!==car&&Math.hypot(car.x-other.x,cy-other.y)<.72))car.y=cy;
@@ -474,7 +474,7 @@ function update(dt){
   for(const bot of bots){
     const d=Math.hypot(px-bot.x,py-bot.y);
     if(d>4){
-      const vx=(px-bot.x)/d*dt*.00012,vy=(py-bot.y)/d*dt*.00012;
+      const vx=(px-bot.x)/d*dt*.00036,vy=(py-bot.y)/d*dt*.00012;
       if(!wall(bot.x+vx,bot.y))bot.x+=vx;
       if(!wall(bot.x,bot.y+vy))bot.y+=vy;
     }
