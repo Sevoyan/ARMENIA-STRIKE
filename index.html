@@ -305,7 +305,68 @@ function throwGrenade(){if(!playing||grenadeCount<=0)return;grenadeCount--;docum
 function explodeGrenade(g){explosions.push({x:g.tx,y:g.ty,time:Date.now()});sound('kill');for(const b of [...bots]){const d=Math.hypot(b.x-g.tx,b.y-g.ty);if(d<2.25){b.h-=Math.round(145*(1-d/3.2));b.hit=8;if(b.h<=0){corpses.push({x:b.x,y:b.y,time:Date.now()});bots=bots.filter(x=>x!==b);kills++;sound('kill');addKillFeed()}}}if(bots.length===0)victory();updateHud()}
 function reload(){if(reloading||ammo===guns[gun].mag||reserve<=0)return;sound('reload');reloading=true;document.getElementById('reload').textContent='...';setTimeout(()=>{let n=Math.min(guns[gun].mag-ammo,reserve);ammo+=n;reserve-=n;reloading=false;document.getElementById('reload').textContent='RELOAD';updateHud()},1150)}
 const keys={};addEventListener('keydown',e=>{keys[e.code]=true});addEventListener('keyup',e=>{keys[e.code]=false});addEventListener('blur',()=>{Object.keys(keys).forEach(k=>keys[k]=false)});
-function update(dt){if(!missionDone&&selectedMission==='survive'&&Date.now()-missionStart>=90000){missionDone=true;playing=false;document.querySelector('.panel h1').textContent='MISSION COMPLETE';document.querySelector('.panel p').textContent='Դու գոյատևեցիր 90 վայրկյան։';document.getElementById('start').style.display='flex';document.getElementById('play').textContent='ՇԱՐՈՒՆԱԿԵԼ';}let forward=-joyY+(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0),side=joyX+(keys.KeyD?1:0)-(keys.KeyA?1:0);let mag=Math.hypot(forward,side);if(mag>1){forward/=mag;side/=mag}if(inCar){ang+=side*dt*.0028;side=0}let speed=dt*(inCar?0.014:0.009);let nx=px+(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed,ny=py+(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;if(!wall(nx,py))px=nx;if(!wall(px,ny))py=ny;if(!inCar)for(const car of cars){if(Math.hypot(px-car.x,py-car.y)<.55){px-=Math.cos(ang)*(-joyY)*speed;py-=Math.sin(ang)*(-joyY)*speed;}}for(const b of bots){let d=Math.hypot(px-b.x,py-b.y);if(d>1.5){let vx=(px-b.x)/d*dt*.00012,vy=(py-b.y)/d*dt*.00012;if(d>4){if(!wall(b.x+vx,b.y))b.x+=vx;if(!wall(b.x,b.y+vy))b.y+=vy}}if(d<9&&d>1.5&&Date.now()-(b.shotAt||0)>1450){let clear=true;for(let s=.25;s<d;s+=.25){if(wall(b.x+(px-b.x)*s/d,b.y+(py-b.y)*s/d)){clear=false;break}}if(clear){b.shotAt=Date.now();enemyShots.push({x:b.x,y:b.y,life:260});if(Math.random()<.58){hp=Math.max(0,hp-6);sound('hit');damageFlash=18;updateHud();if(hp<=0){end();return}}}if(d<=1.5&&Math.random()<.018){hp=Math.max(0,hp-5);sound('hit');damageFlash=18;updateHud();if(hp<=0){end();return}}if(b.hit>0)b.hit--}enemyShots=enemyShots.filter(s=>{s.life-=dt;return s.life>0});grenades=grenades.filter(g=>{if(Date.now()-g.time>=g.fuse){explodeGrenade(g);return false}return true});explosions=explosions.filter(x=>Date.now()-x.time<420);if(bots.length===0&&playing)victory();}
+function update(dt){
+  if(!missionDone&&selectedMission==='survive'&&Date.now()-missionStart>=90000){
+    missionDone=true;playing=false;
+    document.querySelector('.panel h1').textContent='MISSION COMPLETE';
+    document.querySelector('.panel p').textContent='Դու գոյատևեցիր 90 վայրկյան։';
+    document.getElementById('start').style.display='flex';
+    document.getElementById('play').textContent='ՇԱՐՈՒՆԱԿԵԼ';
+    return;
+  }
+  let forward=-joyY+(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0);
+  let side=joyX+(keys.KeyD?1:0)-(keys.KeyA?1:0);
+  let mag=Math.hypot(forward,side);
+  if(mag>1){forward/=mag;side/=mag}
+  if(inCar){ang+=side*dt*.0028;side=0}
+  let speed=dt*(inCar?0.014:0.009);
+  let nx=px+(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed;
+  let ny=py+(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;
+  if(!wall(nx,py))px=nx;
+  if(!wall(px,ny))py=ny;
+  if(!inCar){
+    for(const car of cars){
+      if(Math.hypot(px-car.x,py-car.y)<.55){
+        px-=Math.cos(ang)*(-joyY)*speed;
+        py-=Math.sin(ang)*(-joyY)*speed;
+      }
+    }
+  }
+  for(const bot of bots){
+    const d=Math.hypot(px-bot.x,py-bot.y);
+    if(d>4){
+      const vx=(px-bot.x)/d*dt*.00012,vy=(py-bot.y)/d*dt*.00012;
+      if(!wall(bot.x+vx,bot.y))bot.x+=vx;
+      if(!wall(bot.x,bot.y+vy))bot.y+=vy;
+    }
+    if(d<9&&d>1.5&&Date.now()-(bot.shotAt||0)>1450){
+      let clear=true;
+      for(let s=.25;s<d;s+=.25){
+        if(wall(bot.x+(px-bot.x)*s/d,bot.y+(py-bot.y)*s/d)){clear=false;break}
+      }
+      if(clear){
+        bot.shotAt=Date.now();
+        enemyShots.push({x:bot.x,y:bot.y,life:260});
+        if(Math.random()<.58){
+          hp=Math.max(0,hp-6);sound('hit');damageFlash=18;updateHud();
+          if(hp<=0){end();return}
+        }
+      }
+    }
+    if(d<=1.5&&Math.random()<.018){
+      hp=Math.max(0,hp-5);sound('hit');damageFlash=18;updateHud();
+      if(hp<=0){end();return}
+    }
+    if(bot.hit>0)bot.hit--;
+  }
+  enemyShots=enemyShots.filter(shot=>{shot.life-=dt;return shot.life>0});
+  grenades=grenades.filter(g=>{
+    if(Date.now()-g.time>=g.fuse){explodeGrenade(g);return false}
+    return true;
+  });
+  explosions=explosions.filter(x=>Date.now()-x.time<420);
+  if(bots.length===0&&playing)victory();
+}
 function loop(t){if(!playing)return;let dt=Math.min(40,t-(loop.prev||t));loop.prev=t;update(dt);if(!playing)return;draw();drawMiniMap();requestAnimationFrame(loop)}
 function victory(){if(!playing)return;playing=false;missionDone=true;document.querySelector('.panel h1').textContent='VICTORY!';document.querySelector('.panel p').innerHTML='Դու ոչնչացրեցիր բոլոր հակառակորդներին։<br>Արդյունք՝ <b>'+kills+' հակառակորդ</b>';document.getElementById('play').textContent='ՆՈՐԻՑ ԽԱՂԱԼ';document.getElementById('start').style.display='flex';sound('kill');updateHud()}
 function end(){if(!playing)return;playing=false;missionDone=true;fireHeld=false;joyX=joyY=0;document.querySelector('.panel h1').textContent='GAME OVER';document.querySelector('.panel p').innerHTML='Քո արդյունքը՝ <b>'+kills+' հակառակորդ</b><br>Ալիք՝ '+wave;document.getElementById('play').textContent='ՆՈՐԻՑ ՍԿՍԵԼ';document.getElementById('start').style.display='flex'}
