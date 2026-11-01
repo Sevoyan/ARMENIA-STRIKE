@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#101820"><title>ARMENIA STRIKE</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080d12;color:#fff;font-family:Arial,sans-serif;touch-action:none}#game{display:block;width:100vw;height:100dvh;background:#18232b}#hud{position:fixed;inset:0;pointer-events:none}.top{position:absolute;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;text-shadow:0 2px 5px #000}.brand{font-weight:900;letter-spacing:2px;color:#f0c64c;font-size:clamp(14px,2.5vw,22px)}.stats{text-align:right;font-weight:800;font-size:clamp(13px,2.4vw,20px);line-height:1.5}.small{font-size:11px;color:#c7d0d5;letter-spacing:1px}.cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px}.cross:before,.cross:after{content:"";position:absolute;background:#fff;box-shadow:0 0 4px #000}.cross:before{width:2px;height:22px;left:11px}.cross:after{height:2px;width:22px;top:10px}.bottom{position:absolute;bottom:14px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:end}.weapon{font-weight:900;color:#f0c64c;font-size:clamp(14px,2.4vw,21px);text-shadow:0 2px 5px #000}.hint{font-size:10px;color:#d4dce0}.controls{position:fixed;inset:0;pointer-events:none}.joy{position:absolute;left:22px;bottom:24px;width:116px;height:116px;border:2px solid #ffffff66;border-radius:50%;background:#ffffff18;pointer-events:auto}.knob{position:absolute;width:46px;height:46px;left:33px;top:33px;border-radius:50%;background:#e5bd4caa;border:2px solid #fff9}.actions{position:absolute;right:20px;bottom:22px;display:flex;gap:12px;align-items:end;pointer-events:auto}.act{border:2px solid #fff8;color:#fff;background:#18232bcc;border-radius:50%;width:68px;height:68px;font-weight:900;font-size:12px;box-shadow:0 3px 12px #0008}.act.fire{width:86px;height:86px;background:#9d2525dd;border-color:#ffb5a8;font-size:15px}.act.car{background:#245b48dd;border-color:#9be0b8}.act:active{transform:scale(.94);filter:brightness(1.4)}#start{position:fixed;inset:0;background:linear-gradient(135deg,#101820ee,#172a35ee);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:5}.panel{max-width:520px;width:100%;border:1px solid #d5ad43;border-radius:18px;padding:28px 22px;background:#0c141bee;box-shadow:0 15px 60px #0009}.flag{font-size:34px}.panel h1{color:#f0c64c;letter-spacing:3px;font-size:clamp(27px,7vw,44px);margin:12px 0}.panel p{color:#d3dce0;line-height:1.6;font-size:14px}.startbtn{border:0;border-radius:8px;background:#e5bd4c;color:#111;font-weight:900;font-size:17px;padding:15px 34px;margin-top:10px}.rotate{color:#f0c64c;font-size:12px;margin-top:14px}@media(orientation:portrait){.rotate{display:block}}@media(orientation:landscape){.rotate{display:none}}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080d12;color:#fff;font-family:Arial,sans-serif;touch-action:none}#game{display:none;width:100vw;height:100dvh;background:#18232b}#world3d{position:fixed;inset:0;width:100vw;height:100dvh;display:block;z-index:0;pointer-events:none}#hud{z-index:2}#hud{position:fixed;inset:0;pointer-events:none}.top{position:absolute;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;text-shadow:0 2px 5px #000}.brand{font-weight:900;letter-spacing:2px;color:#f0c64c;font-size:clamp(14px,2.5vw,22px)}.stats{text-align:right;font-weight:800;font-size:clamp(13px,2.4vw,20px);line-height:1.5}.small{font-size:11px;color:#c7d0d5;letter-spacing:1px}.cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px}.cross:before,.cross:after{content:"";position:absolute;background:#fff;box-shadow:0 0 4px #000}.cross:before{width:2px;height:22px;left:11px}.cross:after{height:2px;width:22px;top:10px}.bottom{position:absolute;bottom:14px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:end}.weapon{font-weight:900;color:#f0c64c;font-size:clamp(14px,2.4vw,21px);text-shadow:0 2px 5px #000}.hint{font-size:10px;color:#d4dce0}.controls{position:fixed;inset:0;pointer-events:none}.joy{position:absolute;left:22px;bottom:24px;width:116px;height:116px;border:2px solid #ffffff66;border-radius:50%;background:#ffffff18;pointer-events:auto}.knob{position:absolute;width:46px;height:46px;left:33px;top:33px;border-radius:50%;background:#e5bd4caa;border:2px solid #fff9}.actions{position:absolute;right:20px;bottom:22px;display:flex;gap:12px;align-items:end;pointer-events:auto}.act{border:2px solid #fff8;color:#fff;background:#18232bcc;border-radius:50%;width:68px;height:68px;font-weight:900;font-size:12px;box-shadow:0 3px 12px #0008}.act.fire{width:86px;height:86px;background:#9d2525dd;border-color:#ffb5a8;font-size:15px}.act.car{background:#245b48dd;border-color:#9be0b8}.act:active{transform:scale(.94);filter:brightness(1.4)}#start{position:fixed;inset:0;background:linear-gradient(135deg,#101820ee,#172a35ee);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:5}.panel{max-width:520px;width:100%;border:1px solid #d5ad43;border-radius:18px;padding:28px 22px;background:#0c141bee;box-shadow:0 15px 60px #0009}.flag{font-size:34px}.panel h1{color:#f0c64c;letter-spacing:3px;font-size:clamp(27px,7vw,44px);margin:12px 0}.panel p{color:#d3dce0;line-height:1.6;font-size:14px}.startbtn{border:0;border-radius:8px;background:#e5bd4c;color:#111;font-weight:900;font-size:17px;padding:15px 34px;margin-top:10px}.rotate{color:#f0c64c;font-size:12px;margin-top:14px}@media(orientation:portrait){.rotate{display:block}}@media(orientation:landscape){.rotate{display:none}}
 
 /* PREMIUM ARMENIA STRIKE MENU */
 #start{
@@ -125,7 +125,7 @@
 </style>
 </head>
 <body>
-<canvas id="game"></canvas>
+<canvas id="game"></canvas><canvas id="world3d"></canvas>
 <div id="hud"><div class="top"><div><div class="brand">🇦🇲 ARMENIA STRIKE</div><div class="small" id="mapname">YEREVAN • CASCADE</div></div><div class="stats"><div id="score">KILLS 0</div><div id="hp">HP 100</div><div id="ammo">30 / 90</div></div></div><div class="cross"></div><div class="bottom"><div><div class="weapon" id="gun">AK-47</div><div class="hint">MOVE • AIM • ELIMINATE</div></div><div class="hint">WAVE <b id="wave">1</b></div></div></div>
 <div class="mini-wrap"><div class="mini-title">TACTICAL MAP</div><canvas id="miniMap" width="180" height="135"></canvas></div>
 <div id="killFeed" class="kill-feed"></div>
@@ -205,7 +205,7 @@ function spawn(){let x,y,n=0;do{x=1+Math.random()*(map[0].length-2);y=1+Math.ran
 let audioCtx=null;function sound(type){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!audioCtx)audioCtx=new AC();if(audioCtx.state==='suspended')audioCtx.resume();const t=audioCtx.currentTime,o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);const p=({shot:[105,48,.075,'sawtooth',.12],hit:[180,75,.16,'triangle',.13],kill:[520,780,.18,'sine',.1],reload:[260,390,.12,'square',.045],car:[75,42,.28,'sawtooth',.12],switch:[360,520,.08,'sine',.06]})[type]||[360,520,.08,'sine',.06];o.type=p[3];o.frequency.setValueAtTime(p[0],t);o.frequency.exponentialRampToValueAtTime(Math.max(30,p[1]),t+p[2]);g.gain.setValueAtTime(p[4],t);g.gain.exponentialRampToValueAtTime(.001,t+p[2]);o.start(t);o.stop(t+p[2]);}catch(e){}}let killStreak=0,lastKillAt=0;
 function addKillFeed(){const feed=document.getElementById('killFeed');if(!feed)return;const row=document.createElement('div');row.className='kill-entry';row.innerHTML='<b>YOU</b>  ⚔  ENEMY ELIMINATED';feed.prepend(row);while(feed.children.length>4)feed.lastChild.remove();setTimeout(()=>row.remove(),4200);killStreak=Date.now()-lastKillAt<6500?killStreak+1:1;lastKillAt=Date.now();const badge=document.getElementById('streakBadge');badge.textContent='🔥 '+killStreak+' KILL STREAK';badge.style.opacity=killStreak>=2?'1':'0';}
 function drawMiniMap(){const mc=document.getElementById('miniMap');if(!mc)return;const m=mc.getContext('2d'),cw=mc.width/map[0].length,ch=mc.height/map.length;m.clearRect(0,0,mc.width,mc.height);for(let y=0;y<map.length;y++)for(let x=0;x<map[y].length;x++){m.fillStyle=map[y][x]==='1'?'#7a817d':'#1c3435';m.fillRect(x*cw,y*ch,cw-1,ch-1)}for(const car of cars){m.fillStyle='#e0b84d';m.fillRect(car.x*cw-2,car.y*ch-2,4,4)}for(const b of bots){m.fillStyle='#ed514b';m.beginPath();m.arc(b.x*cw,b.y*ch,3,0,Math.PI*2);m.fill()}m.save();m.translate(px*cw,py*ch);m.rotate(ang);m.fillStyle='#55c9ff';m.beginPath();m.moveTo(0,-7);m.lineTo(5,5);m.lineTo(0,3);m.lineTo(-5,5);m.closePath();m.fill();m.restore();}
-function start(){document.getElementById('game-result')?.remove();map=selectedMap==='cascade'?cascadeMap:defaultMap;selectedMission=document.getElementById('missionSelect').value;missionStart=Date.now();missionDone=false;inCar=false;document.getElementById('car').textContent='ENTER';document.getElementById('start').style.display='none';playing=true;hp=100;px=10.5;py=7.5;ang=selectedMap==='cascade'?-Math.PI/2:0;cars.length=0;if(selectedMap==='cascade'){cars.push({x:8.5,y:5.5,color:'#b8bfc4'},{x:14.5,y:9.5,color:'#263d59'},{x:4.5,y:10.5,color:'#9a2929'},{x:16.5,y:3.5,color:'#68747d'},{x:6.5,y:2.5,color:'#9a2929'});}else{cars.push({x:4.5,y:5.5,color:'#b8bfc4'},{x:15.5,y:3.5,color:'#263d59'},{x:16.5,y:10.5,color:'#9a2929'},{x:7.5,y:11.5,color:'#68747d'},{x:12.5,y:6.5,color:'#9a2929'});}ammo=30;reserve=90;kills=0;wave=1;killStreak=0;lastKillAt=0;document.getElementById('killFeed').innerHTML='';document.getElementById('streakBadge').style.opacity='0';bots=[];corpses=[];enemyShots=[];grenades=[];explosions=[];grenadeCount=3;document.getElementById('grenadeCount').textContent=grenadeCount;document.getElementById('grenade').disabled=false;for(let i=0;i<selectedMode;i++)spawn();updateHud();requestAnimationFrame(loop)}
+function start(){document.getElementById('game-result')?.remove();map=selectedMap==='cascade'?cascadeMap:defaultMap;if(window.rebuild3DWorld)window.rebuild3DWorld(map,selectedMap);selectedMission=document.getElementById('missionSelect').value;missionStart=Date.now();missionDone=false;inCar=false;document.getElementById('car').textContent='ENTER';document.getElementById('start').style.display='none';playing=true;hp=100;px=10.5;py=7.5;ang=selectedMap==='cascade'?-Math.PI/2:0;cars.length=0;if(selectedMap==='cascade'){cars.push({x:8.5,y:5.5,color:'#b8bfc4'},{x:14.5,y:9.5,color:'#263d59'},{x:4.5,y:10.5,color:'#9a2929'},{x:16.5,y:3.5,color:'#68747d'},{x:6.5,y:2.5,color:'#9a2929'});}else{cars.push({x:4.5,y:5.5,color:'#b8bfc4'},{x:15.5,y:3.5,color:'#263d59'},{x:16.5,y:10.5,color:'#9a2929'},{x:7.5,y:11.5,color:'#68747d'},{x:12.5,y:6.5,color:'#9a2929'});}ammo=30;reserve=90;kills=0;wave=1;killStreak=0;lastKillAt=0;document.getElementById('killFeed').innerHTML='';document.getElementById('streakBadge').style.opacity='0';bots=[];corpses=[];enemyShots=[];grenades=[];explosions=[];grenadeCount=3;document.getElementById('grenadeCount').textContent=grenadeCount;document.getElementById('grenade').disabled=false;for(let i=0;i<selectedMode;i++)spawn();updateHud();requestAnimationFrame(loop)}
 function updateHud(){const mi=document.getElementById('missionInfo');if(mi){const goal=selectedMission==='eliminate'?'Ոչնչացնել 10 հակառակորդի':selectedMission==='survive'?'Գոյատևել 90 վայրկյան':selectedMission==='waves'?'Անցնել 3 ալիք':'Կատարել 5 խոցում';const progress=selectedMission==='eliminate'||selectedMission==='precision'?kills+(selectedMission==='precision'?' / 5':' / 10'):selectedMission==='waves'?Math.max(0,wave-1)+' / 3':Math.min(90,Math.floor((Date.now()-missionStart)/1000))+' / 90 վրկ';mi.textContent='Առաջադրանք՝ '+goal+' • '+progress;}document.getElementById('score').textContent=(selectedTeam==='blue'?'BLUE':'RED')+' • '+selectedMode+' VS '+selectedMode+' • KILLS '+kills;document.getElementById('hp').textContent='HP '+hp;document.getElementById('hp').style.color=hp<=30?'#ff5c52':hp<=60?'#ffd36b':'#ffffff';document.getElementById('ammo').textContent=ammo+' / '+reserve;document.getElementById('gun').textContent=guns[gun].name;document.getElementById('scopeOverlay').classList.toggle('active',gun===2);document.getElementById('wave').textContent=wave}
 function cast(a){let d=0;while(d<18){d+=.035;let x=px+Math.cos(a)*d,y=py+Math.sin(a)*d;if(wall(x,y))return d}return 18}
 function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#263b4a');sky.addColorStop(1,'#83908d');ctx.fillStyle=sky;ctx.fillRect(0,0,W,horizon);let floor=ctx.createLinearGradient(0,horizon,0,H);floor.addColorStop(0,'#55564f');floor.addColorStop(1,'#171b1c');ctx.fillStyle=floor;ctx.fillRect(0,horizon,W,H-horizon);
@@ -503,7 +503,7 @@ function update(dt){
   explosions=explosions.filter(x=>Date.now()-x.time<420);
   if((bots.length===0||kills>=selectedMode)&&playing){victory();return;}
 }
-function loop(t){if(!playing)return;let dt=Math.min(40,t-(loop.prev||t));loop.prev=t;update(dt);if(!playing)return;draw();drawMiniMap();requestAnimationFrame(loop)}
+function loop(t){if(!playing)return;window.__asGameState={px,py,ang,inCar,bots,cars,team:selectedTeam};let dt=Math.min(40,t-(loop.prev||t));loop.prev=t;update(dt);if(!playing)return;if(window.render3D)window.render3D();drawMiniMap();requestAnimationFrame(loop)}
 function showResult(title,message,buttonText){document.getElementById('game-result')?.remove();const box=document.createElement('div');box.id='game-result';box.style.cssText='position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);';const card=document.createElement('div');card.style.cssText='width:min(440px,100%);padding:32px 22px;text-align:center;border:2px solid #d4af37;border-radius:18px;background:#0b1118;color:#fff;box-shadow:0 15px 70px #000;';const h=document.createElement('h1');h.textContent=title;h.style.cssText='color:#e8c45c;font-size:clamp(30px,8vw,46px);margin:0 0 18px;letter-spacing:2px;';const p=document.createElement('p');p.textContent=message;p.style.cssText='color:#e1e5e8;font-size:17px;line-height:1.7;margin:0 0 24px;';const b=document.createElement('button');b.textContent=buttonText;b.style.cssText='padding:15px 28px;border:0;border-radius:9px;background:#d4af37;color:#111;font-size:17px;font-weight:900;cursor:pointer;';b.onclick=()=>{box.remove();start()};card.append(h,p,b);box.append(card);document.body.append(box)}
 function victory(){if(!playing)return;playing=false;missionDone=true;fireHeld=false;joyX=joyY=0;showResult('VICTORY!','Դու ոչնչացրեցիր բոլոր հակառակորդներին։ Արդյունք՝ '+kills+' հակառակորդ։','ՆՈՐԻՑ ԽԱՂԱԼ');sound('kill');updateHud()}
 function end(){if(!playing)return;playing=false;missionDone=true;fireHeld=false;joyX=joyY=0;showResult('GAME OVER','Քո արդյունքը՝ '+kills+' հակառակորդ։ Ալիք՝ '+wave,'ՆՈՐԻՑ ՍԿՍԵԼ')}
@@ -517,5 +517,79 @@ c.addEventListener('pointerdown',e=>{if(e.clientX<W*.48)return;drag=true;lastX=e
 addEventListener('keydown',e=>{if(e.code==='Space')shoot();if(e.code==='KeyG')throwGrenade();if(e.code==='KeyR')reload();if(e.code==='KeyQ'){gun=(gun+1)%3;updateHud()}});
 updateHud();
 })();
+</script>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const canvas=document.getElementById('world3d');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9aabb3);scene.fog=new THREE.Fog(0x9aabb3,18,42);
+const camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,100);
+scene.add(new THREE.HemisphereLight(0xdceaff,0x555044,2.0));
+const sun=new THREE.DirectionalLight(0xffe2b3,3.0);sun.position.set(-8,18,-5);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-24;sun.shadow.camera.right=24;sun.shadow.camera.top=24;sun.shadow.camera.bottom=-24;scene.add(sun);
+const world=new THREE.Group();scene.add(world);
+const botMeshes=[],carMeshes=[];
+const mat=(color,roughness=.82,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+const concrete=[0x777b78,0x8c8980,0x696f70,0xa09a8c].map(c=>mat(c));
+const roadMat=mat(0x343a3c),lineMat=mat(0xb5a77b),glass=mat(0x304b59,.25,.45),gold=mat(0xd5ad48,.35,.5);
+const box=(w,h,d,m,x,y,z,parent=world)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o};
+function clearWorld(){while(world.children.length){const o=world.children.pop();o.geometry?.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material?.dispose();}}
+function makeSoldier(color){
+ const g=new THREE.Group(),armor=mat(color),dark=mat(0x20272b),skin=mat(0x9a755e),visor=mat(0x172b36,.2,.5);
+ box(.42,.62,.25,armor,0,.95,0,g);box(.48,.22,.28,dark,0,.82,0,g);
+ box(.31,.27,.3,armor,0,1.43,0,g);const head=new THREE.Mesh(new THREE.SphereGeometry(.19,12,10),skin);head.position.y=1.72;head.castShadow=true;g.add(head);
+ box(.4,.13,.34,dark,0,1.79,0,g);box(.29,.09,.04,visor,0,1.73,-.17,g);
+ for(const x of [-.28,.28]){box(.14,.48,.15,armor,x,1.03,0,g);box(.14,.48,.15,dark,x*.7,.36,0,g);box(.2,.12,.32,dark,x*.7,.08,-.05,g)}
+ box(.09,.1,.3,gold,0,1.02,-.16,g);
+ const rifle=box(.09,.09,.82,dark,.26,1.22,-.28,g);rifle.rotation.x=-.12;
+ return g;
+}
+function makeCar(color){
+ const g=new THREE.Group(),paint=mat(color,.38,.35),rubber=mat(0x101316),trim=mat(0x87949a,.25,.6);
+ box(1.18,.38,2.1,paint,0,.52,0,g);box(.94,.43,1.12,glass,0,.91,-.12,g);
+ box(1.2,.1,2.12,trim,0,.34,0,g);
+ for(const x of [-.62,.62])for(const z of [-.68,.68]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.12,14),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.27,z);w.castShadow=true;g.add(w)}
+ box(.22,.1,.08,gold,-.38,.59,-1.06,g);box(.22,.1,.08,mat(0xb12e27),.38,.59,-1.06,g);
+ return g;
+}
+function build(map,which){
+ clearWorld();botMeshes.length=0;carMeshes.length=0;
+ const rows=map.length,cols=map[0].length;
+ box(cols,.18,rows,roadMat,cols/2,-.12,rows/2);
+ const grid=new THREE.GridHelper(Math.max(cols,rows),Math.max(cols,rows),0x6b6d68,0x555b59);grid.position.set(cols/2,-.015,rows/2);world.add(grid);
+ for(let z=0;z<rows;z++)for(let x=0;x<cols;x++)if(map[z][x]==='1'){
+   const h=2.8+((x*7+z*11)%4)*.42,m=concrete[(x*3+z)%concrete.length];
+   box(1,h,1,m,x+.5,h/2,z+.5);
+   if((x+z)%3===0){box(.62,.25,.035,glass,x+.5,h*.68,z-.012);box(.62,.25,.035,glass,x+.5,h*.38,z-.012)}
+ }
+ // Street lamps and Armenian-city inspired warm details.
+ for(let z=2;z<rows-1;z+=5)for(let x=2;x<cols-1;x+=6)if(map[z][x]==='0'){
+   box(.07,2.7,.07,mat(0x30383a),x,1.35,z);box(.55,.08,.18,gold,x,2.72,z);
+ }
+ if(which==='cascade'){
+   // monumental stepped Cascade landmark, built from real stone blocks
+   for(let i=0;i<11;i++){const width=11-i*.48,depth=.62,y=.18+i*.22;box(width,.2,depth,concrete[i%4],cols/2,y,3.1+i*.52);}
+   for(let side of [-1,1])box(1.2,3.5,8,concrete[1],cols/2+side*6,1.75,6.5);
+ }
+ for(let i=0;i<5;i++){const g=makeCar([0xb8bfc4,0x263d59,0x9a2929,0x68747d,0x9a2929][i]);world.add(g);carMeshes.push(g)}
+}
+window.rebuild3DWorld=build;
+window.render3D=()=>{
+ const game=document.getElementById('game');
+ if(!window.__asGameState)return;
+ const s=window.__asGameState;
+ camera.position.set(s.px, s.inCar?1.65:1.72, s.py);
+ camera.rotation.order='YXZ';camera.rotation.y=-s.ang-Math.PI/2;camera.rotation.x=0;
+ botMeshes.forEach(g=>world.remove(g));botMeshes.length=0;
+ for(const b of s.bots){const g=makeSoldier(s.team==='blue'?0xb83232:0x2766a5);g.position.set(b.x,0,b.y);g.rotation.y=Math.atan2(s.py-b.y,s.px-b.x);world.add(g);botMeshes.push(g)}
+ s.cars.forEach((car,i)=>{const g=carMeshes[i];if(!g)return;g.position.set(car.x,0,car.y);g.rotation.y=-(car.angle||0)+Math.PI/2});
+ renderer.render(scene,camera);
+};
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
