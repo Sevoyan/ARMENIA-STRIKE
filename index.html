@@ -440,6 +440,34 @@ function update(dt){
       }
     }
   }
+  // Հակառակորդի մեքենաները հետապնդում և խոյահարում են խաղացողին
+  for(const car of cars){
+    if(inCar) continue;
+    const dx=px-car.x,dy=py-car.y,dist=Math.hypot(dx,dy);
+    if(dist>0.85){
+      const desired=Math.atan2(dy,dx);
+      if(car.angle===undefined) car.angle=desired;
+      let turn=Math.atan2(Math.sin(desired-car.angle),Math.cos(desired-car.angle));
+      car.angle+=Math.max(-dt*.0022,Math.min(dt*.0022,turn));
+      const speed=dt*.00115;
+      const cx=car.x+Math.cos(car.angle)*speed,cy=car.y+Math.sin(car.angle)*speed;
+      if(!wall(cx,car.y)&&!cars.some(other=>other!==car&&Math.hypot(cx-other.x,car.y-other.y)<.72))car.x=cx;
+      if(!wall(car.x,cy)&&!cars.some(other=>other!==car&&Math.hypot(car.x-other.x,cy-other.y)<.72))car.y=cy;
+    }
+    if(dist<.92&&Date.now()-(car.hitAt||0)>850){
+      car.hitAt=Date.now();hp=Math.max(0,hp-18);sound('hit');damageFlash=22;
+      const push=1.05/(dist||1);px+=dx*push;py+=dy*push;
+      if(wall(px,py)){px-=dx*push;py-=dy*push;}
+      updateHud();if(hp<=0){end();return;}
+    }
+    for(const bot of bots){
+      if(Math.hypot(car.x-bot.x,car.y-bot.y)<.62&&Date.now()-(bot.carHitAt||0)>900){
+        bot.carHitAt=Date.now();bot.h-=55;bot.hit=8;
+        if(bot.h<=0){corpses.push({x:bot.x,y:bot.y,time:Date.now()});bots=bots.filter(x=>x!==bot);kills++;sound('kill');addKillFeed();}
+      }
+    }
+  }
+  if(bots.length===0||kills>=selectedMode){victory();return;}
   for(const bot of bots){
     const d=Math.hypot(px-bot.x,py-bot.y);
     if(d>4){
