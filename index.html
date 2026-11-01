@@ -53,10 +53,20 @@ function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon
  ctx.fillStyle='#4a4841';ctx.beginPath();ctx.moveTo(W*.42,horizon);ctx.lineTo(W*.58,horizon);ctx.lineTo(W*.68,H);ctx.lineTo(W*.32,H);ctx.fill();
  }else if(selectedMap.startsWith('district-')){
  const seed=selectedMap.length*17+selectedMap.charCodeAt(9),baseY=horizon*.78;
- ctx.fillStyle='#3c5144';ctx.fillRect(0,baseY,W,H-baseY);
- for(let i=0;i<12;i++){let bw=W*(.055+(i%3)*.018),bh=H*(.12+((i*seed)%13)/100),x=(i*97+seed*13)%W,y=baseY-bh;ctx.fillStyle=['#9d927f','#b5a58e','#817f77','#c0b39e'][i%4];ctx.fillRect(x,y,bw,bh);ctx.fillStyle='#4d6269';for(let j=0;j<3;j++)ctx.fillRect(x+bw*(.15+j*.25),y+bh*.2,bw*.12,bh*.18)}
- ctx.fillStyle='#56564e';ctx.fillRect(W*.43,horizon,W*.14,H-horizon);
- ctx.fillStyle='#77766c';ctx.fillRect(W*.47,horizon,W*.06,H-horizon);
+ // Ավելի քաղաքային տեսարան՝ բազմահարկ շենքեր, լուսամուտներ, մայթեր ու փողոց
+ ctx.fillStyle='#3e5145';ctx.fillRect(0,baseY,W,H-baseY);
+ for(let i=0;i<13;i++){
+  let bw=W*(.065+(i%3)*.025),bh=H*(.16+((i*seed)%17)/100),x=(i*113+seed*19)%(W+bw)-bw*.3,y=baseY-bh;
+  ctx.fillStyle='#20272a';ctx.fillRect(x+5,y+7,bw,bh);
+  ctx.fillStyle=['#9a8b78','#b7a58d','#777b79','#c0b49f'][i%4];ctx.fillRect(x,y,bw,bh);
+  ctx.fillStyle='#514d45';ctx.fillRect(x,y,bw,Math.max(3,H*.009));
+  for(let row=0;row<4;row++)for(let col=0;col<3;col++){let wx=x+bw*(.13+col*.29),wy=y+bh*(.16+row*.19);ctx.fillStyle=(row+col+i)%4===0?'#d6b879':'#394d56';ctx.fillRect(wx,wy,bw*.16,bh*.105);ctx.fillStyle='#d0c4ac';ctx.fillRect(wx-1,wy+bh*.105,bw*.18,2)}
+ }
+ // Փողոցի հեռանկարային գոտի և մայթեր
+ ctx.fillStyle='#77766e';ctx.beginPath();ctx.moveTo(W*.39,horizon);ctx.lineTo(W*.61,horizon);ctx.lineTo(W*.86,H);ctx.lineTo(W*.14,H);ctx.fill();
+ ctx.fillStyle='#343a3a';ctx.beginPath();ctx.moveTo(W*.43,horizon);ctx.lineTo(W*.57,horizon);ctx.lineTo(W*.72,H);ctx.lineTo(W*.28,H);ctx.fill();
+ ctx.strokeStyle='#d0b979';ctx.lineWidth=2;ctx.setLineDash([12,16]);ctx.beginPath();ctx.moveTo(W*.5,horizon);ctx.lineTo(W*.5,H);ctx.stroke();ctx.setLineDash([]);
+ for(let side of [0,1]){let lx=side?W*.68:W*.32;ctx.fillStyle='#252c2c';ctx.fillRect(lx,H*.48,4,H*.22);ctx.fillStyle='#c7b58f';ctx.beginPath();ctx.arc(lx+2,H*.48,7,0,Math.PI*2);ctx.fill()}
  }else{
  const bw=Math.min(W*.62,540),bh=H*.27,bx=(W-bw)/2,by=horizon-bh*.8;
  ctx.fillStyle='#b8a58b';ctx.fillRect(bx,by+bh*.22,bw,bh*.78);
