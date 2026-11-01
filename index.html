@@ -26,12 +26,29 @@ function updateHud(){const mi=document.getElementById('missionInfo');if(mi){cons
 function cast(a){let d=0;while(d<18){d+=.035;let x=px+Math.cos(a)*d,y=py+Math.sin(a)*d;if(wall(x,y))return d}return 18}
 function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#263b4a');sky.addColorStop(1,'#83908d');ctx.fillStyle=sky;ctx.fillRect(0,0,W,horizon);let floor=ctx.createLinearGradient(0,horizon,0,H);floor.addColorStop(0,'#55564f');floor.addColorStop(1,'#171b1c');ctx.fillStyle=floor;ctx.fillRect(0,horizon,W,H-horizon);
  // Երևանի ընտրված տեսարժան վայրի խաղային տեսարան
- if(selectedMap==='cascade'){const cw=Math.min(W*.62,560),ch=Math.min(H*.34,220),cx=W*.5-cw*.5,cy=horizon-ch*.78;
- ctx.fillStyle='#777b78';ctx.fillRect(cx,cy+ch*.34,cw,ch*.66);
- ctx.fillStyle='#a7aaa3';ctx.beginPath();ctx.moveTo(cx+cw*.08,cy+ch*.34);ctx.lineTo(cx+cw*.92,cy+ch*.34);ctx.lineTo(cx+cw*.82,cy+ch*.05);ctx.lineTo(cx+cw*.18,cy+ch*.05);ctx.closePath();ctx.fill();
- for(let j=0;j<6;j++){let yy=cy+ch*(.39+j*.095),inset=j*cw*.035;ctx.fillStyle=j%2?'#777d7a':'#999d96';ctx.fillRect(cx+inset,yy,cw-inset*2,ch*.055);ctx.fillStyle='#c1c1b7';ctx.fillRect(cx+inset,yy,cw-inset*2,Math.max(2,ch*.012))}
- ctx.fillStyle='#555d5d';ctx.fillRect(cx+cw*.46,cy+ch*.08,cw*.08,ch*.26);
- ctx.fillStyle='#b7b9b0';ctx.fillRect(cx+cw*.475,cy+ch*.1,cw*.05,ch*.24);
+ if(selectedMap==='cascade'){
+ // Կասկադի լայն, բաց ճարտարապետական համալիրը՝ վերևից դեպի ներքև բարձրացող իրական աստիճանաշարով
+ const cw=Math.min(W*.88,900),ch=Math.min(H*.66,440),cx=(W-cw)/2,cy=horizon-ch*.91;
+ // Հեռվում՝ Երևանի հորիզոնն ու Արարատի երկգագաթ ուրվագիծը
+ ctx.fillStyle='#8d9a9a';ctx.beginPath();ctx.moveTo(0,horizon*.58);ctx.lineTo(W*.18,horizon*.36);ctx.lineTo(W*.29,horizon*.53);ctx.lineTo(W*.43,horizon*.27);ctx.lineTo(W*.56,horizon*.5);ctx.lineTo(W*.72,horizon*.34);ctx.lineTo(W,horizon*.56);ctx.lineTo(W,horizon);ctx.lineTo(0,horizon);ctx.fill();
+ ctx.fillStyle='#c5c0ae';ctx.beginPath();ctx.moveTo(W*.23,horizon*.55);ctx.lineTo(W*.38,horizon*.17);ctx.lineTo(W*.49,horizon*.48);ctx.lineTo(W*.61,horizon*.2);ctx.lineTo(W*.77,horizon*.56);ctx.fill();
+ ctx.fillStyle='#e4ded0';ctx.beginPath();ctx.moveTo(W*.38,horizon*.17);ctx.lineTo(W*.34,horizon*.31);ctx.lineTo(W*.4,horizon*.27);ctx.lineTo(W*.43,horizon*.4);ctx.lineTo(W*.49,horizon*.48);ctx.lineTo(W*.44,horizon*.22);ctx.closePath();ctx.fill();
+ // Կասկադի կողային հսկա բաց քարե պատերն ու հարթակները
+ ctx.fillStyle='#a9a99e';ctx.beginPath();ctx.moveTo(cx+cw*.08,cy+ch*.12);ctx.lineTo(cx+cw*.92,cy+ch*.12);ctx.lineTo(cx+cw,cy+ch*.88);ctx.lineTo(cx,cy+ch*.88);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#777d79';ctx.beginPath();ctx.moveTo(cx+cw*.25,cy+ch*.16);ctx.lineTo(cx+cw*.75,cy+ch*.16);ctx.lineTo(cx+cw*.96,cy+ch*.9);ctx.lineTo(cx+cw*.04,cy+ch*.9);ctx.closePath();ctx.fill();
+ // Կենտրոնական լայն աստիճանները՝ հստակ տեսանելի սպիտակ քարե եզրերով
+ for(let j=0;j<13;j++){let t=j/13,yy=cy+ch*(.18+t*.68),inset=cw*(.27-t*.19),hh=ch*(.018+t*.008);ctx.fillStyle=j%2?'#aaa99e':'#d0cbbd';ctx.beginPath();ctx.moveTo(cx+inset,yy);ctx.lineTo(cx+cw-inset,yy);ctx.lineTo(cx+cw-inset+cw*.025,yy+hh);ctx.lineTo(cx+inset-cw*.025,yy+hh);ctx.closePath();ctx.fill();ctx.fillStyle='#eee8d9';ctx.fillRect(cx+inset-cw*.025,yy,cw*(1-2*(inset/cw)) + cw*.05,Math.max(2,hh*.22))}
+ // Կողային թեք հարթակներ, բազրիքներ ու կանաչապատ գոտիներ
+ for(let side=0;side<2;side++){let sx=side?cx+cw*.77:cx+cw*.06;ctx.fillStyle='#c5c0b1';ctx.beginPath();ctx.moveTo(sx,cy+ch*.18);ctx.lineTo(sx+cw*.16,cy+ch*.18);ctx.lineTo(side?cx+cw*.98:cx+cw*.02,cy+ch*.88);ctx.lineTo(side?cx+cw*.84:cx+cw*.16,cy+ch*.88);ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#e5dfd0';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(sx+cw*.04,cy+ch*.2);ctx.lineTo(side?cx+cw*.91:cx+cw*.09,cy+ch*.86);ctx.stroke();
+ for(let k=0;k<4;k++){let tx=side?cx+cw*(.84+k*.035):cx+cw*(.16-k*.035),ty=cy+ch*(.32+k*.14);ctx.fillStyle='#354f39';ctx.beginPath();ctx.arc(tx,ty,Math.max(5,cw*.018),0,Math.PI*2);ctx.fill();ctx.fillStyle='#6d5037';ctx.fillRect(tx-2,ty+5,4,15)}
+ }
+ // Վերին հարթակի ժամանակակից ապակե շենքը և ներքևի շատրվանի ջրավազանը
+ ctx.fillStyle='#777c78';ctx.fillRect(cx+cw*.39,cy+ch*.015,cw*.22,ch*.15);ctx.fillStyle='#c8c5b8';ctx.fillRect(cx+cw*.405,cy+ch*.035,cw*.19,ch*.11);ctx.fillStyle='#62777a';ctx.fillRect(cx+cw*.43,cy+ch*.05,cw*.14,ch*.075);
+ ctx.fillStyle='#536d70';ctx.beginPath();ctx.ellipse(W*.5,horizon+ch*.23,cw*.18,ch*.045,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#d7d4c8';ctx.lineWidth=4;ctx.stroke();
+ ctx.fillStyle='#b8c6c2';ctx.beginPath();ctx.ellipse(W*.5,horizon+ch*.23,cw*.12,ch*.025,0,0,Math.PI*2);ctx.fill();
+ // Քանդակների ու ծաղկանոցների փոքր ուրվագծեր
+ for(let side=0;side<2;side++){let sx=W*(side?.78:.22),sy=horizon+ch*.13;ctx.fillStyle='#514b40';ctx.fillRect(sx-3,sy,6,ch*.08);ctx.fillStyle='#c4b9a1';ctx.beginPath();ctx.arc(sx,sy-5,Math.max(5,cw*.012),0,Math.PI*2);ctx.fill();ctx.fillStyle='#31533b';ctx.fillRect(sx-cw*.045,sy+ch*.09,cw*.09,ch*.025)}
  }else if(selectedMap==='opera'){
  const bw=Math.min(W*.55,480),bh=H*.25,bx=(W-bw)/2,by=horizon-bh*.8;
  ctx.fillStyle='#b8a58b';ctx.fillRect(bx,by+bh*.3,bw,bh*.7);
