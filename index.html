@@ -35,6 +35,10 @@ function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon
  ctx.fillStyle='#e4ded0';ctx.beginPath();ctx.moveTo(W*.38,horizon*.17);ctx.lineTo(W*.34,horizon*.31);ctx.lineTo(W*.4,horizon*.27);ctx.lineTo(W*.43,horizon*.4);ctx.lineTo(W*.49,horizon*.48);ctx.lineTo(W*.44,horizon*.22);ctx.closePath();ctx.fill();
  // Կասկադի կողային հսկա բաց քարե պատերն ու հարթակները
  ctx.fillStyle='#a9a99e';ctx.beginPath();ctx.moveTo(cx+cw*.08,cy+ch*.12);ctx.lineTo(cx+cw*.92,cy+ch*.12);ctx.lineTo(cx+cw,cy+ch*.88);ctx.lineTo(cx,cy+ch*.88);ctx.closePath();ctx.fill();
+ // Քարի մեծ սալերի կարեր և Կասկադի ճարտարապետական աստիճանավոր ճակատ
+ ctx.save();ctx.strokeStyle='#777b75';ctx.lineWidth=1.2;for(let r=0;r<8;r++){let yy=cy+ch*(.17+r*.085);ctx.beginPath();ctx.moveTo(cx+cw*.08,yy);ctx.lineTo(cx+cw*.92,yy);ctx.stroke()}for(let col=0;col<9;col++){let xx=cx+cw*(.1+col*.1);ctx.beginPath();ctx.moveTo(xx,cy+ch*.13);ctx.lineTo(cx+cw*.08+(xx-cx)*.94,cy+ch*.87);ctx.stroke()}ctx.restore();
+ // Արևի տաք լուսավորություն՝ քարե մակերեսների վրա
+ const sun=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);sun.addColorStop(0,'rgba(255,226,166,.22)');sun.addColorStop(.48,'rgba(255,255,255,.02)');sun.addColorStop(1,'rgba(28,35,32,.2)');ctx.fillStyle=sun;ctx.beginPath();ctx.moveTo(cx+cw*.08,cy+ch*.12);ctx.lineTo(cx+cw*.92,cy+ch*.12);ctx.lineTo(cx+cw,cy+ch*.88);ctx.lineTo(cx,cy+ch*.88);ctx.closePath();ctx.fill();
  ctx.fillStyle='#777d79';ctx.beginPath();ctx.moveTo(cx+cw*.25,cy+ch*.16);ctx.lineTo(cx+cw*.75,cy+ch*.16);ctx.lineTo(cx+cw*.96,cy+ch*.9);ctx.lineTo(cx+cw*.04,cy+ch*.9);ctx.closePath();ctx.fill();
  // Կենտրոնական լայն աստիճանները՝ հստակ տեսանելի սպիտակ քարե եզրերով
  for(let j=0;j<13;j++){let t=j/13,yy=cy+ch*(.18+t*.68),inset=cw*(.27-t*.19),hh=ch*(.018+t*.008);ctx.fillStyle=j%2?'#aaa99e':'#d0cbbd';ctx.beginPath();ctx.moveTo(cx+inset,yy);ctx.lineTo(cx+cw-inset,yy);ctx.lineTo(cx+cw-inset+cw*.025,yy+hh);ctx.lineTo(cx+inset-cw*.025,yy+hh);ctx.closePath();ctx.fill();ctx.fillStyle='#eee8d9';ctx.fillRect(cx+inset-cw*.025,yy,cw*(1-2*(inset/cw)) + cw*.05,Math.max(2,hh*.22))}
@@ -45,6 +49,8 @@ function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon
  }
  // Վերին հարթակի ժամանակակից ապակե շենքը և ներքևի շատրվանի ջրավազանը
  ctx.fillStyle='#777c78';ctx.fillRect(cx+cw*.39,cy+ch*.015,cw*.22,ch*.15);ctx.fillStyle='#c8c5b8';ctx.fillRect(cx+cw*.405,cy+ch*.035,cw*.19,ch*.11);ctx.fillStyle='#62777a';ctx.fillRect(cx+cw*.43,cy+ch*.05,cw*.14,ch*.075);
+  // Արևի մեղմ շող և ջրի արտացոլանք
+ ctx.save();let glow=ctx.createRadialGradient(W*.72,horizon*.2,2,W*.72,horizon*.2,W*.28);glow.addColorStop(0,'rgba(255,231,174,.22)');glow.addColorStop(1,'rgba(255,231,174,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,horizon);ctx.restore();
  ctx.fillStyle='#536d70';ctx.beginPath();ctx.ellipse(W*.5,horizon+ch*.23,cw*.18,ch*.045,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#d7d4c8';ctx.lineWidth=4;ctx.stroke();
  ctx.fillStyle='#b8c6c2';ctx.beginPath();ctx.ellipse(W*.5,horizon+ch*.23,cw*.12,ch*.025,0,0,Math.PI*2);ctx.fill();
  // Շատրվանի ջրի շիթերը և լուսային փայլը
