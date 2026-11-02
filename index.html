@@ -197,7 +197,7 @@
 (()=>{const c=document.getElementById('game'),ctx=c.getContext('2d');let selectedTeam='blue',selectedMode=1,selectedMission='eliminate',missionStart=0,missionDone=false,selectedMap='district-kentron-1',W,H,dpr,playing=false,px=3.5,py=3.5,ang=0,hp=100,ammo=30,reserve=90,kills=0,wave=1,gun=0,last=0,reloading=false,fireHeld=false,joyX=0,joyY=0,drag=false,lastX=0,bots=[],corpses=[],enemyShots=[],grenades=[],explosions=[],grenadeCount=3,muzzle=0,damageFlash=0,inCar=false,activeCar=null,cars=[{x:5.5,y:1.5,color:'#b8bfc4'},{x:9.5,y:5.5,color:'#263d59'},{x:2.5,y:7.5,color:'#9a2929'}];
 const guns=[{name:'AK-47',mag:30,damage:34,rate:220},{name:'M4A1',mag:30,damage:29,rate:150},{name:'AWP',mag:5,damage:100,rate:650}];
 const defaultMap=['11111111111111111111','10000000000000000001','10111000110001110001','10000000000000000001','10100111000111001001','10000000000000000001','10001100111001100001','10000000000000000001','10110001100011001101','10000000000000000001','10001110011000111001','10000000000000000001','10110001100011001101','10000000000000000001','11111111111111111111'];
-const cascadeMap=['11111111111111111111','10000000000000000001','10100000000000000101','10100011000110000101','10000000000000000001','10001100000000110001','10000000000000000001','10100000000000000101','10100000000000000101','10000000000000000001','10001100000000110001','10000000000000000001','10100000000000000101','10000000000000000001','11111111111111111111'];
+const cascadeMap=['11111111111111111111','10000000000000000001','10011000000000110001','10011000000000110001','10000000000000000001','10011000000000110001','10011000000000110001','10000000000000000001','10011000000000110001','10011000000000110001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','11111111111111111111'];
 const hraparakMap=['11111111111111111111','10000000000000000001','10001100000000011001','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','10000000000000000001','10001100000000011001','10000000000000000001','11111111111111111111'];
 const northAvenueMap=['11111111111111111111','10000000000000000001','10100000000000000101','10100000000000000101','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','11111111111111111111'];
 function expandMap(source){const out=[];for(const row of source){let wide='';for(const cell of row)wide+=cell+cell+cell;out.push(wide,wide,wide);}return out;}
@@ -621,9 +621,25 @@ function build(map,which){
    box(5,.08,rows-3,mat(0xb4a995),cols/2,.03,rows/2);
  }
  if(which==='cascade'){
-   // monumental stepped Cascade landmark, built from real stone blocks
-   for(let i=0;i<11;i++){const width=11-i*.48,depth=.62,y=.18+i*.22;box(width,.2,depth,concrete[i%4],cols/2,y,3.1+i*.52);}
-   for(let side of [-1,1])box(1.2,3.5,8,concrete[1],cols/2+side*6,1.75,6.5);
+   // Five broad travertine terraces, central monumental stairs and side stairways.
+   for(let level=0;level<5;level++){
+     const z=3.1+level*2.35, y=.18+level*.48, width=12.8-level*.42;
+     box(width,.22,2.05,concrete[(level+1)%4],cols/2,y,z);
+     box(3.05,.30,2.05,concrete[level%4],cols/2,y+.12,z+.98);
+     box(3.05,.30,2.05,concrete[level%4],cols/2,y+.12,z-.98);
+     for(const side of [-1,1]){
+       box(2.15,.28,2.05,concrete[(level+2)%4],cols/2+side*5.1,y+.08,z);
+       box(.18,.72,2.05,concrete[1],cols/2+side*6.35,y+.34,z);
+     }
+   }
+   // Sculpture-garden plaza and side retaining walls.
+   for(const side of [-1,1]){
+     box(2.1,2.2,15,concrete[1],cols/2+side*8.1,1.05,7.2);
+     box(2.4,.18,4,concrete[2],cols/2+side*4.2,.12,1.1);
+   }
+   // Upper terrace monument / colonnade silhouette.
+   box(6.8,.35,1.0,concrete[0],cols/2,2.9,14.2);
+   for(let pillar=0;pillar<7;pillar++)box(.22,2.7,.22,concrete[0],cols/2-2.8+pillar*.93,4.25,14.2);
  }
  for(let i=0;i<5;i++){const g=makeCar([0xb8bfc4,0x263d59,0x9a2929,0x68747d,0x9a2929][i]);world.add(g);carMeshes.push(g)}
 }
