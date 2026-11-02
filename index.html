@@ -475,7 +475,7 @@ function update(dt){
   let mag=Math.hypot(forward,side);
   if(mag>1){forward/=mag;side/=mag}
   if(inCar){ang+=side*dt*.0034;side=0}
-  let speed=dt*(inCar?0.055:0.030);
+  let speed=dt*(inCar?0.035:0.022);
   let nx=px+(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed;
   let ny=py+(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;
   const radius=inCar?.72:.24;
