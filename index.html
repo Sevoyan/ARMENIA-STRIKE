@@ -612,12 +612,29 @@ function build(map,which){
    box(.07,2.7,.07,mat(0x30383a),x,1.35,z);box(.55,.08,.18,gold,x,2.72,z);
  }
  if(which==='hraparak'){
-   // Republic Square plaza, central fountain and monumental civic buildings.
-   const plaza=mat(0xb4aa94),stone=mat(0x9a8d79);
-   box(7,.12,5,plaza,cols/2,.02,rows/2);
-   const fountain=new THREE.Mesh(new THREE.CylinderGeometry(1.05,1.25,.42,32),mat(0x879da0,.25,.25));fountain.position.set(cols/2,.24,rows/2);fountain.castShadow=true;world.add(fountain);
-   const water=new THREE.Mesh(new THREE.CylinderGeometry(.78,.82,.06,32),mat(0x4e9ca8,.18,.4));water.position.set(cols/2,.49,rows/2);world.add(water);
-   for(const side of [-1,1]){box(4,3.6,1.3,stone,cols/2+side*7,1.8,3.2);box(4.2,.28,1.45,gold,cols/2+side*7,3.65,3.2);box(4,3.4,1.3,concrete[2],cols/2+side*7,1.7,rows-3.2)}
+   // Detailed Republic Square: Armenian tuff civic architecture and musical fountains.
+   const plaza=mat(0xb9ad98),stone=mat(0xb99a78),light=mat(0xd2b99a),dark=mat(0x765d49),glass=mat(0x536d73,.18,.3),waterMat=mat(0x4e9ca8,.18,.4);
+   box(cols*.72,.12,rows*.48,plaza,cols/2,.015,rows/2);
+   // Central oval fountain basin with layered stone rim and water.
+   const base=new THREE.Mesh(new THREE.CylinderGeometry(3.0,3.15,.38,48),stone);base.scale.z=.72;base.position.set(cols/2,.22,rows/2);base.castShadow=true;world.add(base);
+   const rim=new THREE.Mesh(new THREE.TorusGeometry(2.55,.16,10,56),light);rim.scale.z=.72;rim.rotation.x=Math.PI/2;rim.position.set(cols/2,.48,rows/2);world.add(rim);
+   const water=new THREE.Mesh(new THREE.CylinderGeometry(2.55,2.58,.07,48),waterMat);water.scale.z=.72;water.position.set(cols/2,.43,rows/2);world.add(water);
+   for(let k=0;k<13;k++){const a=k*Math.PI*2/13,jet=new THREE.Mesh(new THREE.CylinderGeometry(.035,.065,.7+(k%4)*.2,8),light);jet.position.set(cols/2+Math.cos(a)*1.65,.86,rows/2+Math.sin(a)*1.15);world.add(jet);}
+   // Government House with its signature clock tower on the eastern side.
+   const gx=cols/2+10,gz=3.4;
+   box(12,3.8,1.8,stone,gx,1.9,gz);box(12.3,.28,2.0,light,gx,3.95,gz);box(11.8,.22,1.9,dark,gx,4.2,gz);
+   for(let n=0;n<9;n++){const x=gx-5.1+n*1.28;box(.72,1.7,.09,glass,x,2.05,gz-.96);box(.82,.12,.16,light,x,2.98,gz-1.02);box(.82,.12,.16,light,x,1.15,gz-1.02);}
+   box(2.3,2.0,2.0,stone,gx,5.25,gz);box(2.5,.22,2.15,light,gx,6.35,gz);
+   box(1.45,1.35,.12,dark,gx,5.25,gz-1.08);
+   const clock=new THREE.Mesh(new THREE.CircleGeometry(.57,32),light);clock.position.set(gx,5.28,gz-1.17);world.add(clock);
+   // National Gallery / History Museum long arcade opposite the Government House.
+   const mx=cols/2-10,mz=3.6;box(12,4.0,1.9,light,mx,2,mz);box(12.3,.3,2.05,stone,mx,4.12,mz);
+   for(let n=0;n<10;n++){const x=mx-5.1+n*1.13;box(.22,2.45,.2,dark,x,1.85,mz-.99);box(.22,2.45,.2,dark,x+.55,1.85,mz-.99);box(.72,.2,.2,stone,x+.27,3.12,mz-.99);box(.78,1.25,.07,glass,x+.27,1.85,mz-1.03);}
+   // Flanking tuff buildings, balconies and lit windows.
+   for(let side of [-1,1])for(let n=0;n<2;n++){const x=cols/2+side*(17+n*2.5),z=rows/2+side*1.5,h=5.2+(n%2)*.8;box(4.2,h,3.8,stone,x,h/2,z);box(4.4,.25,4,light,x,h+.12,z);for(let f=0;f<3;f++)for(let w=0;w<2;w++){const wx=x-.95+w*1.9,wy=1.1+f*1.45;box(.78,.92,.07,glass,wx,wy,z-1.94);box(.92,.12,.2,dark,wx,wy-.53,z-2.02);}}
+   // Stone paving rings and square perimeter lamps.
+   for(let ring=0;ring<3;ring++){const radius=5.5+ring*1.45;const tor=new THREE.Mesh(new THREE.TorusGeometry(radius,.045,6,80),light);tor.rotation.x=Math.PI/2;tor.position.set(cols/2,.11,rows/2);world.add(tor);}
+   for(let side of [-1,1])for(let n=0;n<5;n++){const x=cols/2+side*(19+n*.35),z=5+n*5.5;box(.09,3.1,.09,dark,x,1.55,z);box(.55,.12,.4,gold,x,3.12,z);}
  }
  if(which==='opera'){
     // Opera theatre and Freedom Square landmark scene.
