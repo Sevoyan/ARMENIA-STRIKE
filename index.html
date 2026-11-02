@@ -198,7 +198,7 @@
 const guns=[{name:'AK-47',mag:30,damage:34,rate:220},{name:'M4A1',mag:30,damage:29,rate:150},{name:'AWP',mag:5,damage:100,rate:650}];
 const defaultMap=['11111111111111111111','10000000000000000001','10111000110001110001','10000000000000000001','10100111000111001001','10000000000000000001','10001100111001100001','10000000000000000001','10110001100011001101','10000000000000000001','10001110011000111001','10000000000000000001','10110001100011001101','10000000000000000001','11111111111111111111'];
 const cascadeMap=['11111111111111111111','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','11111111111111111111'];
-const hraparakMap=['11111111111111111111','10000000000000000001','10001100000000011001','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','10000000000000000001','10001100000000011001','10000000000000000001','11111111111111111111'];
+const hraparakMap=['11111111111111111111','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','11111111111111111111'];
 const northAvenueMap=['11111111111111111111','10000000000000000001','10100000000000000101','10100000000000000101','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','10000000000000000001','10100000000000000101','10000000000000000001','11111111111111111111'];
 const operaMap=['11111111111111111111','10000000000000000001','10111000111100011101','10100000000000000001','10100011100111000101','10000010000001000001','10000010000001000001','10000000000000000001','10000010000001000001','10000010000001000001','10100011100111000101','10100000000000000001','10111000111100011101','10000000000000000001','11111111111111111111'];
 function expandMap(source){const out=[];for(const row of source){let wide='';for(const cell of row)wide+=cell+cell+cell;out.push(wide,wide,wide);}return out;}
@@ -254,7 +254,7 @@ function drawMiniMap(){
  m.save();m.translate(px*cw,py*ch);m.rotate(ang);m.shadowColor='#48caff';m.shadowBlur=13;m.fillStyle='#58d4ff';m.beginPath();m.moveTo(0,-Math.max(6,ch*.8));m.lineTo(Math.max(4,cw*.38),Math.max(4,ch*.48));m.lineTo(0,ch*.25);m.lineTo(-Math.max(4,cw*.38),Math.max(4,ch*.48));m.closePath();m.fill();m.restore();
  m.strokeStyle='#d4af37';m.lineWidth=2;m.strokeRect(1,1,mc.width-2,mc.height-2);
 }
-function start(){window.__asThirdPerson=false;const use3D=!!window.render3D&&!window.__as3DError;document.getElementById('world3d').style.display=use3D?'block':'none';c.style.display=use3D?'none':'block';c.style.position='fixed';c.style.inset='0';c.style.zIndex='1';thirdPerson=false;document.getElementById('viewToggle').textContent='3RD PERSON';document.getElementById('game-result')?.remove();const sourceMap=selectedMap==='cascade'?cascadeMap:selectedMap==='hraparak'?hraparakMap:selectedMap==='north-avenue'?northAvenueMap:selectedMap==='opera'?operaMap:selectedMap.startsWith('district-')?makeDistrictMap(selectedMap):defaultMap;map=expandMap(sourceMap);if(window.rebuild3DWorld)window.rebuild3DWorld(map,selectedMap);selectedMission=document.getElementById('missionSelect').value;missionStart=Date.now();missionDone=false;inCar=false;activeCar=null;document.getElementById('car').textContent='ENTER';document.getElementById('start').style.display='none';playing=true;hp=100;px=map[0].length/2+.5;py=selectedMap==='hraparak'?map.length/2+9.5:map.length/2+.5;ang=(selectedMap==='cascade'||selectedMap==='hraparak')?-Math.PI/2:0;cars.length=0;cars.push({x:px+2.5,y:py,color:'#b8bfc4',angle:0},{x:px-4,y:py,color:'#263d59',angle:0},{x:px+7,y:py+2,color:'#9a2929',angle:0},{x:px-7,y:py-2,color:'#68747d',angle:0},{x:px+2,y:py+5,color:'#9a2929',angle:0});ammo=30;reserve=90;kills=0;wave=1;killStreak=0;lastKillAt=0;document.getElementById('killFeed').innerHTML='';document.getElementById('streakBadge').style.opacity='0';bots=[];corpses=[];enemyShots=[];grenades=[];explosions=[];grenadeCount=3;document.getElementById('grenadeCount').textContent=grenadeCount;document.getElementById('grenade').disabled=false;for(let i=0;i<selectedMode;i++)spawn();updateHud();requestAnimationFrame(loop)}
+function start(){window.__asThirdPerson=false;const use3D=!!window.render3D&&!window.__as3DError;document.getElementById('world3d').style.display=use3D?'block':'none';c.style.display=use3D?'none':'block';c.style.position='fixed';c.style.inset='0';c.style.zIndex='1';thirdPerson=false;document.getElementById('viewToggle').textContent='3RD PERSON';document.getElementById('game-result')?.remove();const sourceMap=selectedMap==='cascade'?cascadeMap:selectedMap==='hraparak'?hraparakMap:selectedMap==='north-avenue'?northAvenueMap:selectedMap==='opera'?operaMap:selectedMap.startsWith('district-')?makeDistrictMap(selectedMap):defaultMap;map=expandMap(sourceMap);if(window.rebuild3DWorld)window.rebuild3DWorld(map,selectedMap);selectedMission=document.getElementById('missionSelect').value;missionStart=Date.now();missionDone=false;inCar=false;activeCar=null;document.getElementById('car').textContent='ENTER';document.getElementById('start').style.display='none';playing=true;hp=100;px=map[0].length/2+.5;py=selectedMap==='hraparak'?map.length/2+13.5:map.length/2+.5;ang=(selectedMap==='cascade'||selectedMap==='hraparak')?-Math.PI/2:0;cars.length=0;cars.push({x:px+2.5,y:py,color:'#b8bfc4',angle:0},{x:px-4,y:py,color:'#263d59',angle:0},{x:px+7,y:py+2,color:'#9a2929',angle:0},{x:px-7,y:py-2,color:'#68747d',angle:0},{x:px+2,y:py+5,color:'#9a2929',angle:0});ammo=30;reserve=90;kills=0;wave=1;killStreak=0;lastKillAt=0;document.getElementById('killFeed').innerHTML='';document.getElementById('streakBadge').style.opacity='0';bots=[];corpses=[];enemyShots=[];grenades=[];explosions=[];grenadeCount=3;document.getElementById('grenadeCount').textContent=grenadeCount;document.getElementById('grenade').disabled=false;for(let i=0;i<selectedMode;i++)spawn();updateHud();requestAnimationFrame(loop)}
 function updateHud(){const mi=document.getElementById('missionInfo');if(mi){const goal=selectedMission==='eliminate'?'Ոչնչացնել 10 հակառակորդի':selectedMission==='survive'?'Գոյատևել 90 վայրկյան':selectedMission==='waves'?'Անցնել 3 ալիք':'Կատարել 5 խոցում';const progress=selectedMission==='eliminate'||selectedMission==='precision'?kills+(selectedMission==='precision'?' / 5':' / 10'):selectedMission==='waves'?Math.max(0,wave-1)+' / 3':Math.min(90,Math.floor((Date.now()-missionStart)/1000))+' / 90 վրկ';mi.textContent='Առաջադրանք՝ '+goal+' • '+progress;}document.getElementById('score').textContent=(selectedTeam==='blue'?'BLUE':'RED')+' • '+selectedMode+' VS '+selectedMode+' • KILLS '+kills;document.getElementById('hp').textContent='HP '+hp;document.getElementById('hp').style.color=hp<=30?'#ff5c52':hp<=60?'#ffd36b':'#ffffff';document.getElementById('ammo').textContent=ammo+' / '+reserve;document.getElementById('gun').textContent=guns[gun].name;document.getElementById('scopeOverlay').classList.toggle('active',gun===2);document.getElementById('wave').textContent=wave}
 function cast(a){let d=0;while(d<18){d+=.035;let x=px+Math.cos(a)*d,y=py+Math.sin(a)*d;if(wall(x,y))return d}return 18}
 function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#263b4a');sky.addColorStop(1,'#83908d');ctx.fillStyle=sky;ctx.fillRect(0,0,W,horizon);let floor=ctx.createLinearGradient(0,horizon,0,H);floor.addColorStop(0,'#55564f');floor.addColorStop(1,'#171b1c');ctx.fillStyle=floor;ctx.fillRect(0,horizon,W,H-horizon);
@@ -612,29 +612,30 @@ function build(map,which){
    box(.07,2.7,.07,mat(0x30383a),x,1.35,z);box(.55,.08,.18,gold,x,2.72,z);
  }
  if(which==='hraparak'){
-   // Detailed Republic Square: Armenian tuff civic architecture and musical fountains.
-   const plaza=mat(0xb9ad98),stone=mat(0xb99a78),light=mat(0xd2b99a),dark=mat(0x765d49),glass=mat(0x536d73,.18,.3),waterMat=mat(0x4e9ca8,.18,.4);
-   box(cols*.72,.12,rows*.48,plaza,cols/2,.015,rows/2);
-   // Central oval fountain basin with layered stone rim and water.
-   const base=new THREE.Mesh(new THREE.CylinderGeometry(3.0,3.15,.38,48),stone);base.scale.z=.72;base.position.set(cols/2,.22,rows/2);base.castShadow=true;world.add(base);
-   const rim=new THREE.Mesh(new THREE.TorusGeometry(2.55,.16,10,56),light);rim.scale.z=.72;rim.rotation.x=Math.PI/2;rim.position.set(cols/2,.48,rows/2);world.add(rim);
-   const water=new THREE.Mesh(new THREE.CylinderGeometry(2.55,2.58,.07,48),waterMat);water.scale.z=.72;water.position.set(cols/2,.43,rows/2);world.add(water);
-   for(let k=0;k<13;k++){const a=k*Math.PI*2/13,jet=new THREE.Mesh(new THREE.CylinderGeometry(.035,.065,.7+(k%4)*.2,8),light);jet.position.set(cols/2+Math.cos(a)*1.65,.86,rows/2+Math.sin(a)*1.15);world.add(jet);}
-   // Government House with its signature clock tower on the eastern side.
-   const gx=cols/2+10,gz=3.4;
-   box(12,3.8,1.8,stone,gx,1.9,gz);box(12.3,.28,2.0,light,gx,3.95,gz);box(11.8,.22,1.9,dark,gx,4.2,gz);
-   for(let n=0;n<9;n++){const x=gx-5.1+n*1.28;box(.72,1.7,.09,glass,x,2.05,gz-.96);box(.82,.12,.16,light,x,2.98,gz-1.02);box(.82,.12,.16,light,x,1.15,gz-1.02);}
-   box(2.3,2.0,2.0,stone,gx,5.25,gz);box(2.5,.22,2.15,light,gx,6.35,gz);
-   box(1.45,1.35,.12,dark,gx,5.25,gz-1.08);
-   const clock=new THREE.Mesh(new THREE.CircleGeometry(.57,32),light);clock.position.set(gx,5.28,gz-1.17);world.add(clock);
-   // National Gallery / History Museum long arcade opposite the Government House.
-   const mx=cols/2-10,mz=3.6;box(12,4.0,1.9,light,mx,2,mz);box(12.3,.3,2.05,stone,mx,4.12,mz);
-   for(let n=0;n<10;n++){const x=mx-5.1+n*1.13;box(.22,2.45,.2,dark,x,1.85,mz-.99);box(.22,2.45,.2,dark,x+.55,1.85,mz-.99);box(.72,.2,.2,stone,x+.27,3.12,mz-.99);box(.78,1.25,.07,glass,x+.27,1.85,mz-1.03);}
-   // Flanking tuff buildings, balconies and lit windows.
-   for(let side of [-1,1])for(let n=0;n<2;n++){const x=cols/2+side*(17+n*2.5),z=rows/2+side*1.5,h=5.2+(n%2)*.8;box(4.2,h,3.8,stone,x,h/2,z);box(4.4,.25,4,light,x,h+.12,z);for(let f=0;f<3;f++)for(let w=0;w<2;w++){const wx=x-.95+w*1.9,wy=1.1+f*1.45;box(.78,.92,.07,glass,wx,wy,z-1.94);box(.92,.12,.2,dark,wx,wy-.53,z-2.02);}}
-   // Stone paving rings and square perimeter lamps.
-   for(let ring=0;ring<3;ring++){const radius=5.5+ring*1.45;const tor=new THREE.Mesh(new THREE.TorusGeometry(radius,.045,6,80),light);tor.rotation.x=Math.PI/2;tor.position.set(cols/2,.11,rows/2);world.add(tor);}
-   for(let side of [-1,1])for(let n=0;n<5;n++){const x=cols/2+side*(19+n*.35),z=5+n*5.5;box(.09,3.1,.09,dark,x,1.55,z);box(.55,.12,.4,gold,x,3.12,z);}
+   // Republic Square landmark cluster: place all structures directly ahead of spawn.
+   const tuff=mat(0xb98f6d),sand=mat(0xd2b99a),roof=mat(0x65594d),glass=mat(0x405b64,.15,.3),water=mat(0x3f9eae,.18,.25),dark=mat(0x594333);
+   // Large plaza floor.
+   box(cols-4,.16,rows-4,mat(0xb5aa96),cols/2,.02,rows/2);
+   // Government House: long facade with clock tower, front-facing toward -Z.
+   const gx=cols/2+9,gz=8;
+   box(17,4.8,2.6,tuff,gx,2.4,gz);box(17.5,.35,2.85,sand,gx,4.9,gz);box(16.8,.3,2.7,roof,gx,5.2,gz);
+   for(let n=0;n<11;n++){let x=gx-7.2+n*1.44;box(.78,1.55,.12,glass,x,2.3,gz-1.34);box(.9,.12,.2,sand,x,3.15,gz-1.43);}
+   box(3.4,2.5,3.0,tuff,gx,6.55,gz);box(3.7,.3,3.2,sand,gx,7.95,gz);box(1.6,1.5,.15,dark,gx,6.65,gz-1.58);
+   const clock=new THREE.Mesh(new THREE.CircleGeometry(.58,32),sand);clock.position.set(gx,6.7,gz-1.68);world.add(clock);
+   // National Gallery and History Museum colonnade, opposite side.
+   const mx=cols/2-9,mz=8;box(17,4.5,2.7,sand,mx,2.25,mz);box(17.5,.35,2.9,tuff,mx,4.65,mz);
+   for(let n=0;n<12;n++){const x=mx-7.3+n*1.33;box(.28,3.1,.32,dark,x,2.0,mz-1.48);box(.28,3.1,.32,dark,x+.55,2.0,mz-1.48);box(.85,.2,.3,tuff,x+.28,3.7,mz-1.48);}
+   // Broad central fountain, unmistakably visible from the spawn point.
+   const fx=cols/2,fz=rows/2+1;
+   const basin=new THREE.Mesh(new THREE.CylinderGeometry(4.3,4.6,.55,48),tuff);basin.position.set(fx,.3,fz);world.add(basin);
+   const pool=new THREE.Mesh(new THREE.CylinderGeometry(3.75,3.85,.12,48),water);pool.position.set(fx,.62,fz);world.add(pool);
+   for(let n=0;n<12;n++){const a=n*Math.PI/6;const jet=new THREE.Mesh(new THREE.CylinderGeometry(.06,.1,1.3+(n%3)*.3,10),sand);jet.position.set(fx+Math.cos(a)*2.1,.95,fz+Math.sin(a)*1.5);world.add(jet);}
+   // Decorative paving rings around fountain.
+   for(let n=0;n<3;n++){const ring=new THREE.Mesh(new THREE.TorusGeometry(5.2+n*1.3,.07,8,64),sand);ring.rotation.x=Math.PI/2;ring.position.set(fx,.15,fz);world.add(ring);}
+   // Surrounding low-rise tuff facades with visible windows.
+   for(let side of [-1,1])for(let n=0;n<3;n++){const x=cols/2+side*(18+n*2.3),z=rows/2-5+n*5.5,h=5.8;box(4.2,h,3.8,tuff,x,h/2,z);box(4.4,.3,4,sand,x,h+.15,z);for(let f=0;f<3;f++)for(let w=0;w<2;w++)box(.85,1,.08,glass,x-.95+w*1.9,1.25+f*1.45,z-1.96);}
+   // Lamps around the open square.
+   for(let side of [-1,1])for(let n=0;n<6;n++){const x=cols/2+side*22,z=5+n*6;box(.12,3.2,.12,dark,x,1.6,z);box(.65,.16,.42,sand,x,3.25,z);}
  }
  if(which==='opera'){
     // Opera theatre and Freedom Square landmark scene.
