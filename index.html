@@ -542,7 +542,7 @@ updateHud();
 </script>
 
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js').catch(()=>import('https://unpkg.com/three@0.160.0/build/three.module.js'));
 const canvas=document.getElementById('world3d');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
