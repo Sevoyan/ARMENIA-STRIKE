@@ -793,6 +793,38 @@ function build(map,which){
  for(let z=2;z<rows-1;z+=5)for(let x=2;x<cols-1;x+=6)if(map[z][x]==='0'){
    box(.07,2.7,.07,mat(0x30383a),x,1.35,z);box(.55,.08,.18,gold,x,2.72,z);
  }
+ if(which==='cascade'){
+   // Recognizable 3D Yerevan Cascade: broad pale travertine terraces and stair flights.
+   const stone=mat(0xd8d0bd,.78,.08),edge=mat(0xf0e9d9,.72,.05),shadowStone=mat(0x8f8d83,.9,.05),waterMat=mat(0x527f86,.2,.22),rail=mat(0x777b77,.7,.35),green=mat(0x456344);
+   const cx=cols/2,baseZ=5.5;
+   box(15,.65,1.2,stone,cx,.32,baseZ+1.2);
+   box(.7,3.6,13,shadowStone,cx-7.1,1.8,baseZ-5);
+   box(.7,3.6,13,shadowStone,cx+7.1,1.8,baseZ-5);
+   for(let n=0;n<18;n++){
+     const z=baseZ-n*.68,y=.12+n*.145,w=11.8+n*.12;
+     box(w,.16,.78,stone,cx,y,z);
+     box(w,.07,.12,edge,cx,y+.105,z-.34);
+   }
+   for(const side of [-1,1]){
+     const ramp=box(1.45,2.45,12,stone,cx+side*6.05,1.45,baseZ-5.2);ramp.rotation.x=-.19;
+     for(let n=0;n<13;n++){
+       const z=baseZ-n*.78,y=.3+n*.16,x=cx+side*6.15;
+       const post=new THREE.Mesh(new THREE.CylinderGeometry(.035,.045,.72,8),rail);post.position.set(x,y+.38,z);world.add(post);
+     }
+     const bar=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,12.4,8),rail);bar.rotation.x=Math.PI/2-.19;bar.position.set(cx+side*6.15,1.55,baseZ-4.7);world.add(bar);
+   }
+   box(9,2.5,3.2,stone,cx,3.1,baseZ-12.1);
+   box(8.4,1.65,.12,glass,cx,3.25,baseZ-13.75);
+   box(9.3,.22,3.5,edge,cx,4.42,baseZ-12.1);
+   box(8,.16,3,waterMat,cx,.06,baseZ+3.6);
+   for(let n=0;n<5;n++){const jet=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,.8,8),waterMat);jet.position.set(cx-2+n,.52,baseZ+3.6);world.add(jet);}
+   for(const side of [-1,1])for(let n=0;n<4;n++){
+     const x=cx+side*(8.2+n*.45),z=baseZ-1.5-n*2.5;
+     box(1.25,.28,1.1,stone,x,.18,z);box(1.05,.5,.9,green,x,.55,z);
+     const treeTrunk=new THREE.Mesh(new THREE.CylinderGeometry(.09,.13,1.25,7),trunk);treeTrunk.position.set(x,1.05,z);world.add(treeTrunk);
+     const crown=new THREE.Mesh(new THREE.SphereGeometry(.72,10,8),leaves[n%leaves.length]);crown.position.set(x,1.85,z);crown.castShadow=true;world.add(crown);
+   }
+ }
  if(which==='hraparak'){
    // Republic Square landmark cluster: place all structures directly ahead of spawn.
    const tuff=mat(0xb98f6d),sand=mat(0xd2b99a),roof=mat(0x65594d),glass=mat(0x405b64,.15,.3),water=mat(0x3f9eae,.18,.25),dark=mat(0x594333);
