@@ -418,14 +418,22 @@ if(damageFlash>0){ctx.fillStyle='rgba(180,0,0,'+(damageFlash/18*.25)+')';ctx.fil
  // arms and gloves
  ctx.strokeStyle='#33423e';ctx.lineWidth=Math.max(18,W*.035);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(W*.405,H*.835+bob);ctx.lineTo(W*.465,H*.88+bob);ctx.moveTo(W*.595,H*.835+bob);ctx.lineTo(W*.535,H*.88+bob);ctx.stroke();
  ctx.fillStyle='#a77d5e';ctx.beginPath();ctx.arc(W*.465,H*.88+bob,W*.018,0,Math.PI*2);ctx.arc(W*.535,H*.88+bob,W*.018,0,Math.PI*2);ctx.fill();
- // detailed rifle in hands
+ // Detailed first-person weapon silhouette, changes with selected weapon
  ctx.translate(W*.5,H*.89+bob);ctx.rotate(-.12);
- ctx.fillStyle='#111719';ctx.fillRect(-W*.025,-H*.018,W*.16,H*.033);
- ctx.fillStyle='#3e4948';ctx.fillRect(W*.005,-H*.03,W*.115,H*.018);
- ctx.fillStyle='#111719';ctx.fillRect(W*.11,-H*.023,W*.095,H*.008);
- ctx.fillStyle='#89918a';ctx.fillRect(W*.06,-H*.034,W*.022,H*.008);
- ctx.fillStyle='#202a2b';ctx.fillRect(W*.005,-H*.002,W*.03,H*.035);
- ctx.fillStyle='#111719';ctx.fillRect(W*.045,-H*.002,W*.012,H*.028);
+ const rifleMetal='#171d20',rifleSteel='#59615e',riflePoly='#303b38',rifleEdge='#89918a';
+ const isAwp=gun===2,isM4=gun===1;
+ ctx.fillStyle=riflePoly;ctx.beginPath();ctx.moveTo(-W*.12,-H*.018);ctx.lineTo(-W*.045,-H*.026);ctx.lineTo(-W*.015,-H*.012);ctx.lineTo(-W*.015,H*.012);ctx.lineTo(-W*.10,H*.018);ctx.closePath();ctx.fill();
+ ctx.fillStyle=rifleMetal;ctx.fillRect(-W*.035,-H*.019,W*(isAwp?.31:.245),H*.034);
+ ctx.fillStyle=rifleSteel;ctx.fillRect(-W*.01,-H*.032,W*(isAwp?.22:.17),H*.012);
+ ctx.fillStyle=rifleMetal;ctx.fillRect(W*(isAwp?.26:.205),-H*.014,W*(isAwp?.16:.12),H*.009);
+ ctx.fillStyle=rifleEdge;ctx.fillRect(W*(isAwp?.415:.32),-H*.019,W*.012,H*.018);
+ ctx.fillStyle=riflePoly;ctx.fillRect(W*.035,-H*.004,W*.045,H*.042);
+ ctx.fillStyle=rifleMetal;ctx.fillRect(W*.06,H*.025,W*.018,H*.035);
+ ctx.fillStyle=riflePoly;ctx.fillRect(-W*.02,-H*.043,W*(isAwp?.15:.095),H*.012);
+ ctx.fillStyle=rifleSteel;ctx.fillRect(W*.075,-H*.052,W*.07,H*.009);
+ if(isAwp){ctx.fillStyle='#202a2d';ctx.fillRect(W*.04,-H*.067,W*.19,H*.025);ctx.fillStyle=rifleEdge;ctx.fillRect(W*.11,-H*.075,W*.05,H*.008)}
+ else if(isM4){ctx.fillStyle=rifleMetal;ctx.fillRect(W*.15,-H*.04,W*.09,H*.014);ctx.fillRect(W*.19,-H*.026,W*.012,H*.03)}
+ else{ctx.fillStyle=riflePoly;ctx.fillRect(W*.13,-H*.04,W*.025,H*.035);ctx.fillStyle=rifleSteel;ctx.fillRect(W*.145,-H*.045,W*.012,H*.012)}
  ctx.restore();
  }else{
  // Մեքենայի ներսի տեսք՝ դիմապակի, կապոտ և ղեկ
@@ -566,13 +574,47 @@ const roadMat=mat(0x343a3c),lineMat=mat(0xb5a77b),glass=mat(0x304b59,.25,.45),go
 const box=(w,h,d,m,x,y,z,parent=world)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o};
 function clearWorld(){while(world.children.length){const o=world.children.pop();o.geometry?.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material?.dispose();}}
 function makeSoldier(color){
- const g=new THREE.Group(),armor=mat(color),dark=mat(0x20272b),skin=mat(0x9a755e),visor=mat(0x172b36,.2,.5);
- box(.42,.62,.25,armor,0,.95,0,g);box(.48,.22,.28,dark,0,.82,0,g);
- box(.31,.27,.3,armor,0,1.43,0,g);const head=new THREE.Mesh(new THREE.SphereGeometry(.19,12,10),skin);head.position.y=1.72;head.castShadow=true;g.add(head);
- box(.4,.13,.34,dark,0,1.79,0,g);box(.29,.09,.04,visor,0,1.73,-.17,g);
- for(const x of [-.28,.28]){box(.14,.48,.15,armor,x,1.03,0,g);box(.14,.48,.15,dark,x*.7,.36,0,g);box(.2,.12,.32,dark,x*.7,.08,-.05,g)}
- box(.09,.1,.3,gold,0,1.02,-.16,g);
- const rifle=box(.09,.09,.82,dark,.26,1.22,-.28,g);rifle.rotation.x=-.12;
+ const g=new THREE.Group(),uniform=mat(color),pants=mat(0x343d39),armor=mat(0x252f30),edge=mat(0x69736d),skin=mat(0x9a755e),helmet=mat(0x303a37),visor=mat(0x172b36,.18,.55),boot=mat(0x171c1d),rifle=mat(0x171c1d,.5,.25),wood=mat(0x574333),strap=mat(0x171f20);
+ const limb=(x,y,z,w,h,d,m)=>box(w,h,d,m,x,y,z,g);
+ // Boots, articulated legs and knee pads
+ for(const x of [-.13,.13]){
+   limb(x,.12,-.035,.19,.22,.34,boot);limb(x,.48,0,.17,.55,.2,pants);
+   limb(x,.48,-.115,.18,.16,.055,armor);limb(x,.78,0,.22,.18,.23,edge);
+ }
+ // Torso, plate carrier, shoulder armor and backpack
+ limb(0,1.12,0,.48,.62,.27,uniform);limb(0,1.13,-.17,.42,.48,.10,armor);
+ limb(0,1.15,-.23,.32,.32,.035,edge);
+ limb(0,1.43,.12,.34,.34,.22,strap);
+ for(const x of [-.18,.18]){
+   limb(x,1.43,-.015,.17,.2,.29,uniform);
+   limb(x,1.13,-.235,.13,.18,.055,strap);
+   limb(x,1.0,-.245,.12,.12,.06,armor);
+   limb(x,.91,-.24,.11,.07,.065,edge);
+ }
+ // Magazine pouches, radio and chest details
+ for(let i=0;i<3;i++){limb(-.13+i*.13,1.08,-.25,.085,.13,.07,strap);limb(-.13+i*.13,1.08,-.29,.06,.025,.012,edge)}
+ limb(.29,1.34,.04,.12,.28,.15,armor);limb(.29,1.42,-.045,.1,.06,.03,edge);
+ // Neck and helmeted head
+ limb(0,1.58,0,.15,.15,.15,skin);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.17,14,12),skin);head.position.set(0,1.78,0);head.castShadow=true;g.add(head);
+ const dome=new THREE.Mesh(new THREE.SphereGeometry(.205,16,10,0,Math.PI*2,0,Math.PI*.58),helmet);dome.position.set(0,1.83,0);dome.castShadow=true;g.add(dome);
+ limb(0,1.78,-.16,.31,.055,.07,visor);limb(0,1.69,-.14,.23,.045,.045,skin);
+ // Arms bent forward, gloves and elbow pads
+ for(const x of [-1,1]){
+   const upper=box(.15,.36,.16,uniform,x*.31,1.27,-.015,g);upper.rotation.z=x*-.22;
+   const fore=box(.13,.32,.14,uniform,x*.29,1.12,-.18,g);fore.rotation.x=-.45;
+   limb(x*.29,1.12,-.26,.14,.13,.13,boot);
+   limb(x*.31,1.3,-.09,.17,.13,.17,armor);
+ }
+ // Detailed assault rifle held across chest: stock, receiver, magazine, handguard, barrel and sights
+ limb(.19,1.25,-.34,.13,.12,.22,wood);
+ limb(.19,1.25,-.53,.12,.11,.35,rifle);
+ limb(.19,1.31,-.78,.09,.08,.22,rifle);
+ limb(.19,1.31,-.99,.055,.055,.25,rifle);
+ limb(.19,1.19,-.54,.075,.2,.1,rifle);
+ limb(.19,1.34,-.68,.045,.08,.12,edge);
+ limb(.19,1.39,-.62,.035,.035,.15,strap);
+ limb(.19,1.15,-.48,.04,.12,.09,strap);
  return g;
 }
 function makeCar(color){
