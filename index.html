@@ -695,11 +695,36 @@ function makeSoldier(color){
  return root;
 }
 function makeCar(color){
- const g=new THREE.Group(),paint=mat(color,.38,.35),rubber=mat(0x101316),trim=mat(0x87949a,.25,.6);
- box(1.18,.38,2.1,paint,0,.52,0,g);box(.94,.43,1.12,glass,0,.91,-.12,g);
- box(1.2,.1,2.12,trim,0,.34,0,g);
- for(const x of [-.62,.62])for(const z of [-.68,.68]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.12,14),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.27,z);w.castShadow=true;g.add(w)}
- box(.22,.1,.08,gold,-.38,.59,-1.06,g);box(.22,.1,.08,mat(0xb12e27),.38,.59,-1.06,g);
+ const g=new THREE.Group(),paint=mat(color,.3,.28),darkPaint=mat(0x20262b,.42,.38),rubber=mat(0x101316),rim=mat(0xb8c0c5,.72,.24),glassMat=mat(0x263c48,.18,.16),chrome=mat(0x9ca8ad,.78,.22),head=mat(0xffedbd,.25,.2),tail=mat(0xc51f25,.2,.25);
+ // Sculpted lower body, hood, trunk and bumpers.
+ box(1.32,.38,2.55,paint,0,.55,0,g);
+ box(1.27,.19,.72,paint,0,.78,-.86,g);box(1.25,.18,.55,paint,0,.76,1.0,g);
+ box(1.35,.16,.16,darkPaint,0,.39,-1.31,g);box(1.35,.16,.16,darkPaint,0,.39,1.31,g);
+ // Cabin with windshield, rear glass and side windows.
+ box(1.04,.48,1.28,glassMat,0,.99,-.12,g);
+ box(1.08,.07,.12,paint,0,1.25,-.73,g);box(1.08,.07,.12,paint,0,1.25,.5,g);
+ for(const x of [-.54,.54]){
+   box(.055,.48,1.2,paint,x,.99,-.12,g);
+   box(.025,.32,.48,glass,x*1.02,1.0,-.43,g);
+   box(.025,.32,.48,glass,x*1.02,1.0,.18,g);
+   box(.035,.035,.52,chrome,x*1.04,.72,-.12,g);
+   box(.13,.09,.2,paint,x*1.08,.83,-.78,g);
+   box(.12,.07,.2,paint,x*1.08,.83,.56,g);
+ }
+ // Wheel arches and detailed wheels with metallic hubs.
+ for(const x of [-.68,.68])for(const z of [-.82,.82]){
+   const arch=new THREE.Mesh(new THREE.TorusGeometry(.245,.045,8,20,Math.PI),darkPaint);arch.rotation.z=Math.PI/2;arch.position.set(x,.3,z);g.add(arch);
+   const w=new THREE.Mesh(new THREE.CylinderGeometry(.235,.235,.16,24),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.29,z);w.castShadow=true;g.add(w);
+   const hub=new THREE.Mesh(new THREE.CylinderGeometry(.145,.145,.17,16),rim);hub.rotation.z=Math.PI/2;hub.position.set(x*1.01,.29,z);g.add(hub);
+   const cap=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,.18,12),darkPaint);cap.rotation.z=Math.PI/2;cap.position.set(x*1.02,.29,z);g.add(cap);
+   for(let k=0;k<5;k++){const a=k*Math.PI*2/5;const spoke=box(.035,.035,.13,rim,x*1.025,.29+Math.sin(a)*.09,z+Math.cos(a)*.09,g);spoke.rotation.x=a;}
+ }
+ // Front grille, lamps, rear lamps, mirrors and door details.
+ box(.58,.2,.035,darkPaint,0,.55,-1.29,g);box(.42,.055,.04,chrome,0,.56,-1.315,g);
+ for(const x of [-.47,.47]){box(.24,.13,.045,head,x,.68,-1.3,g);box(.2,.12,.045,tail,x,.67,1.29,g);box(.12,.1,.12,paint,x*1.42,.91,-.46,g);}
+ for(const x of [-.35,.35])box(.2,.055,.035,chrome,x,.4,-1.31,g);
+ box(.055,.42,.035,darkPaint,-.665,.62,-.1,g);box(.055,.42,.035,darkPaint,.665,.62,-.1,g);
+ g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
  return g;
 }
 function build(map,which){
