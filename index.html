@@ -640,48 +640,59 @@ let spriteLabelCache=null;function makePlayerNameTag(){
  sprite.scale.set(1.65,.42,1);sprite.position.set(0,2.28,0);sprite.renderOrder=10;return sprite;
 }
 function makeSoldier(color){
- const g=new THREE.Group(),uniform=mat(color),pants=mat(0x343d39),armor=mat(0x252f30),edge=mat(0x69736d),skin=mat(0x9a755e),helmet=mat(0x303a37),visor=mat(0x172b36,.18,.55),boot=mat(0x171c1d),rifle=mat(0x171c1d,.5,.25),wood=mat(0x574333),strap=mat(0x171f20);
- const limb=(x,y,z,w,h,d,m)=>box(w,h,d,m,x,y,z,g);
- // Boots, articulated legs and knee pads
- for(const x of [-.13,.13]){
-   limb(x,.12,-.035,.19,.22,.34,boot);limb(x,.48,0,.17,.55,.2,pants);
-   limb(x,.48,-.115,.18,.16,.055,armor);limb(x,.78,0,.22,.18,.23,edge);
+ const root=new THREE.Group(),uniform=mat(color),pants=mat(0x343d39),armor=mat(0x252f30),edge=mat(0x69736d),skin=mat(0x9a755e),helmet=mat(0x303a37),visor=mat(0x172b36,.18,.55),boot=mat(0x171c1d),metal=mat(0x171c1d,.42,.45),wood=mat(0x574333),strap=mat(0x171f20);
+ const part=(parent,w,h,d,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o};
+ const pivot=(parent,x,y,z)=>{const p=new THREE.Group();p.position.set(x,y,z);parent.add(p);return p};
+ // Hip and torso with layered tactical vest.
+ const hips=pivot(root,0,.91,0);part(hips,.39,.25,.25,pants,0,0,0);
+ const torso=pivot(root,0,1.02,0);part(torso,.49,.59,.29,uniform,0,.28,0);
+ part(torso,.43,.48,.105,armor,0,.29,-.17);part(torso,.34,.32,.04,edge,0,.29,-.235);
+ part(torso,.34,.28,.23,strap,0,.61,.08);
+ for(let i=0;i<3;i++){part(torso,.085,.13,.07,strap,-.13+i*.13,.22,-.25);part(torso,.06,.025,.012,edge,-.13+i*.13,.22,-.29)}
+ part(torso,.13,.27,.15,armor,.3,.53,.04);
+ // Helmeted head and neck.
+ part(torso,.15,.16,.15,skin,0,.69,0);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.17,16,12),skin);head.position.set(0,.86,0);head.castShadow=true;torso.add(head);
+ const dome=new THREE.Mesh(new THREE.SphereGeometry(.205,18,12,0,Math.PI*2,0,Math.PI*.58),helmet);dome.position.set(0,.91,0);dome.castShadow=true;torso.add(dome);
+ part(torso,.31,.055,.07,visor,0,.85,-.16);
+ // Independently animated upper/lower arms.
+ const arms=[];
+ for(const side of [-1,1]){
+   const shoulder=pivot(torso,side*.29,.53,-.015);
+   part(shoulder,.17,.34,.17,uniform,0,-.16,0);
+   part(shoulder,.18,.14,.18,armor,0,-.08,-.015);
+   const elbow=pivot(shoulder,0,-.31,-.015);
+   part(elbow,.135,.32,.14,uniform,0,-.15,-.04);
+   part(elbow,.14,.12,.13,boot,0,-.29,-.1);
+   arms.push({shoulder,elbow,side});
  }
- // Torso, plate carrier, shoulder armor and backpack
- limb(0,1.12,0,.48,.62,.27,uniform);limb(0,1.13,-.17,.42,.48,.10,armor);
- limb(0,1.15,-.23,.32,.32,.035,edge);
- limb(0,1.43,.12,.34,.34,.22,strap);
- for(const x of [-.18,.18]){
-   limb(x,1.43,-.015,.17,.2,.29,uniform);
-   limb(x,1.13,-.235,.13,.18,.055,strap);
-   limb(x,1.0,-.245,.12,.12,.06,armor);
-   limb(x,.91,-.24,.11,.07,.065,edge);
+ // Articulated legs with knee and ankle pivots.
+ const legs=[];
+ for(const side of [-1,1]){
+   const hip=pivot(root,side*.13,.82,0);
+   part(hip,.18,.39,.2,pants,0,-.19,0);
+   part(hip,.19,.13,.055,armor,0,-.3,-.11);
+   const knee=pivot(hip,0,-.38,0);
+   part(knee,.17,.36,.18,pants,0,-.17,0);
+   part(knee,.19,.14,.055,edge,0,-.08,-.11);
+   part(knee,.2,.13,.32,boot,0,-.37,-.035);
+   legs.push({hip,knee,side});
  }
- // Magazine pouches, radio and chest details
- for(let i=0;i<3;i++){limb(-.13+i*.13,1.08,-.25,.085,.13,.07,strap);limb(-.13+i*.13,1.08,-.29,.06,.025,.012,edge)}
- limb(.29,1.34,.04,.12,.28,.15,armor);limb(.29,1.42,-.045,.1,.06,.03,edge);
- // Neck and helmeted head
- limb(0,1.58,0,.15,.15,.15,skin);
- const head=new THREE.Mesh(new THREE.SphereGeometry(.17,14,12),skin);head.position.set(0,1.78,0);head.castShadow=true;g.add(head);
- const dome=new THREE.Mesh(new THREE.SphereGeometry(.205,16,10,0,Math.PI*2,0,Math.PI*.58),helmet);dome.position.set(0,1.83,0);dome.castShadow=true;g.add(dome);
- limb(0,1.78,-.16,.31,.055,.07,visor);limb(0,1.69,-.14,.23,.045,.045,skin);
- // Arms bent forward, gloves and elbow pads
- for(const x of [-1,1]){
-   const upper=box(.15,.36,.16,uniform,x*.31,1.27,-.015,g);upper.rotation.z=x*-.22;
-   const fore=box(.13,.32,.14,uniform,x*.29,1.12,-.18,g);fore.rotation.x=-.45;
-   limb(x*.29,1.12,-.26,.14,.13,.13,boot);
-   limb(x*.31,1.3,-.09,.17,.13,.17,armor);
- }
- // Detailed assault rifle held across chest: stock, receiver, magazine, handguard, barrel and sights
- limb(.19,1.25,-.34,.13,.12,.22,wood);
- limb(.19,1.25,-.53,.12,.11,.35,rifle);
- limb(.19,1.31,-.78,.09,.08,.22,rifle);
- limb(.19,1.31,-.99,.055,.055,.25,rifle);
- limb(.19,1.19,-.54,.075,.2,.1,rifle);
- limb(.19,1.34,-.68,.045,.08,.12,edge);
- limb(.19,1.39,-.62,.035,.035,.15,strap);
- limb(.19,1.15,-.48,.04,.12,.09,strap);
- return g;
+ // Rifle held in both hands, aligned forward along the soldier's -Z axis.
+ const rifle=new THREE.Group();rifle.position.set(0,1.31,-.24);root.add(rifle);
+ part(rifle,.15,.14,.48,metal,0,0,-.2);
+ part(rifle,.075,.075,.63,metal,0,.015,-.69);
+ part(rifle,.055,.055,.22,metal,0,.015,-1.1);
+ part(rifle,.12,.25,.13,metal,0,-.17,-.18);
+ part(rifle,.13,.2,.16,wood,0,-.16,.08);
+ part(rifle,.11,.11,.22,wood,0,-.015,.2);
+ part(rifle,.045,.12,.11,strap,0,.12,-.48);
+ part(rifle,.045,.04,.18,metal,0,.13,-.6);
+ // Support hands reach the foregrip and pistol grip.
+ part(rifle,.12,.12,.12,boot,-.16,-.035,-.48);
+ part(rifle,.12,.12,.12,boot,.13,-.08,-.08);
+ root.userData={torso,arms,legs,rifle,walkPhase:0,lastX:null,lastZ:null};
+ return root;
 }
 function makeCar(color){
  const g=new THREE.Group(),paint=mat(color,.38,.35),rubber=mat(0x101316),trim=mat(0x87949a,.25,.6);
@@ -917,7 +928,7 @@ window.render3D=()=>{
  const game=document.getElementById('game');
  if(!window.__asGameState)return;
  const s=window.__asGameState;
- if(window.__asThirdPerson){const distance=s.inCar?6.2:5.1,height=s.inCar?3.5:3.15;const rightX=Math.cos(s.ang+Math.PI/2),rightZ=Math.sin(s.ang+Math.PI/2);const desiredCamera=new THREE.Vector3(s.px-Math.cos(s.ang)*distance+rightX*.55,height,s.py-Math.sin(s.ang)*distance+rightZ*.55);if(!window.__asCameraReady){camera.position.copy(desiredCamera);window.__asCameraReady=true;}else camera.position.lerp(desiredCamera,0.19);const lookTarget=new THREE.Vector3(s.px+Math.cos(s.ang)*2.1,1.35,s.py+Math.sin(s.ang)*2.1);camera.lookAt(lookTarget);if(!window.__asPlayerMesh||window.__asPlayerMesh.parent!==world){window.__asPlayerMesh=makeSoldier(s.team==='blue'?0x2766a5:0xb83232);window.__asPlayerMesh.add(makePlayerNameTag());world.add(window.__asPlayerMesh)}window.__asPlayerMesh.visible=!s.inCar;window.__asPlayerMesh.position.set(s.px,0,s.py);window.__asPlayerMesh.rotation.y=-s.ang+Math.PI/2;const tag=window.__asPlayerMesh.children.find(o=>o.isSprite);if(tag){const label=(playerName||'PLAYER 01').slice(0,16);if(tag.userData.label!==label){tag.material.map?.dispose();const fresh=makePlayerNameTag();tag.material.map=fresh.material.map;tag.userData.label=label;fresh.material.dispose();}}}else{camera.position.set(s.px,s.inCar?1.28:1.72,s.py);camera.rotation.order='YXZ';camera.rotation.y=-s.ang-Math.PI/2;camera.rotation.x=0;if(window.__asPlayerMesh)window.__asPlayerMesh.visible=false;}
+ if(window.__asThirdPerson){const distance=s.inCar?6.2:5.1,height=s.inCar?3.5:3.15;const rightX=Math.cos(s.ang+Math.PI/2),rightZ=Math.sin(s.ang+Math.PI/2);const desiredCamera=new THREE.Vector3(s.px-Math.cos(s.ang)*distance+rightX*.55,height,s.py-Math.sin(s.ang)*distance+rightZ*.55);if(!window.__asCameraReady){camera.position.copy(desiredCamera);window.__asCameraReady=true;}else camera.position.lerp(desiredCamera,0.19);const lookTarget=new THREE.Vector3(s.px+Math.cos(s.ang)*2.1,1.35,s.py+Math.sin(s.ang)*2.1);camera.lookAt(lookTarget);if(!window.__asPlayerMesh||window.__asPlayerMesh.parent!==world){window.__asPlayerMesh=makeSoldier(s.team==='blue'?0x2766a5:0xb83232);window.__asPlayerMesh.add(makePlayerNameTag());world.add(window.__asPlayerMesh)}window.__asPlayerMesh.visible=!s.inCar;window.__asPlayerMesh.position.set(s.px,0,s.py);window.__asPlayerMesh.rotation.y=-s.ang+Math.PI/2;const rig=window.__asPlayerMesh.userData;const now=performance.now();const delta=rig.lastX===null?0:Math.hypot(s.px-rig.lastX,s.py-rig.lastZ);rig.lastX=s.px;rig.lastZ=s.py;const moving=Math.min(1,delta*90);rig.walkPhase=(rig.walkPhase||0)+moving*.22;const swing=Math.sin(rig.walkPhase)*.62*moving;rig.legs.forEach(l=>{l.hip.rotation.x=swing*l.side;l.knee.rotation.x=Math.max(0,-swing*l.side)*.85});rig.arms.forEach((arm)=>{arm.shoulder.rotation.x=-.48-swing*.22;arm.elbow.rotation.x=-.42;});rig.torso.rotation.z=Math.sin(rig.walkPhase*2)*.025*moving;rig.rifle.rotation.x=-.025+Math.sin(now*.018)*.008;const tag=window.__asPlayerMesh.children.find(o=>o.isSprite);if(tag){const label=(playerName||'PLAYER 01').slice(0,16);if(tag.userData.label!==label){tag.material.map?.dispose();const fresh=makePlayerNameTag();tag.material.map=fresh.material.map;tag.userData.label=label;fresh.material.dispose();}}}else{camera.position.set(s.px,s.inCar?1.28:1.72,s.py);camera.rotation.order='YXZ';camera.rotation.y=-s.ang-Math.PI/2;camera.rotation.x=0;if(window.__asPlayerMesh)window.__asPlayerMesh.visible=false;}
  botMeshes.forEach(g=>world.remove(g));botMeshes.length=0;
  for(const b of s.bots){const g=makeSoldier(s.team==='blue'?0xb83232:0x2766a5);g.position.set(b.x,0,b.y);g.rotation.y=Math.atan2(s.py-b.y,s.px-b.x);world.add(g);botMeshes.push(g)}
  s.cars.forEach((car,i)=>{const g=carMeshes[i];if(!g)return;g.position.set(car.x,0,car.y);g.rotation.y=-(car.angle||0)+Math.PI/2});
