@@ -513,14 +513,14 @@ function update(dt){
   let rawSide=joyX+(keys.KeyD?1:0)-(keys.KeyA?1:0);
   const inputLength=Math.hypot(rawForward,rawSide);
   if(inputLength>1){rawForward/=inputLength;rawSide/=inputLength}
-  const response=1-Math.exp(-dt*.014);
+  const response=1-Math.exp(-dt*.010);
   smoothForward+=(rawForward-smoothForward)*response;
   smoothSide+=(rawSide-smoothSide)*response;
   let forward=smoothForward,side=smoothSide;
   if(inCar){targetAng+=side*dt*.0034;side=0}
   const turn=Math.atan2(Math.sin(targetAng-ang),Math.cos(targetAng-ang));
   ang+=turn*(1-Math.exp(-dt*.018));
-  let speed=dt*(inCar?0.026:0.0165);
+  let speed=dt*(inCar?0.023:0.0148);
   let dx=(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed;
   let dy=(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;
   const radius=inCar?.88:.48;
@@ -906,7 +906,7 @@ window.render3D=()=>{
  const game=document.getElementById('game');
  if(!window.__asGameState)return;
  const s=window.__asGameState;
- if(window.__asThirdPerson){const distance=s.inCar?5.0:2.9,height=s.inCar?2.7:2.05;camera.position.set(s.px-Math.cos(s.ang)*distance,height,s.py-Math.sin(s.ang)*distance);camera.lookAt(s.px,1.25,s.py);if(!window.__asPlayerMesh||window.__asPlayerMesh.parent!==world){window.__asPlayerMesh=makeSoldier(s.team==='blue'?0x2766a5:0xb83232);world.add(window.__asPlayerMesh)}window.__asPlayerMesh.visible=!s.inCar;window.__asPlayerMesh.position.set(s.px,0,s.py);window.__asPlayerMesh.rotation.y=-s.ang+Math.PI/2;}else{camera.position.set(s.px,s.inCar?1.28:1.72,s.py);camera.rotation.order='YXZ';camera.rotation.y=-s.ang-Math.PI/2;camera.rotation.x=0;if(window.__asPlayerMesh)window.__asPlayerMesh.visible=false;}
+ if(window.__asThirdPerson){const distance=s.inCar?4.2:2.15,height=s.inCar?2.45:1.82;const desiredCamera=new THREE.Vector3(s.px-Math.cos(s.ang)*distance,height,s.py-Math.sin(s.ang)*distance);camera.position.lerp(desiredCamera,0.16);const lookTarget=new THREE.Vector3(s.px,1.12,s.py);camera.lookAt(lookTarget);if(!window.__asPlayerMesh||window.__asPlayerMesh.parent!==world){window.__asPlayerMesh=makeSoldier(s.team==='blue'?0x2766a5:0xb83232);world.add(window.__asPlayerMesh)}window.__asPlayerMesh.visible=!s.inCar;window.__asPlayerMesh.position.set(s.px,0,s.py);window.__asPlayerMesh.rotation.y=-s.ang+Math.PI/2;}else{camera.position.set(s.px,s.inCar?1.28:1.72,s.py);camera.rotation.order='YXZ';camera.rotation.y=-s.ang-Math.PI/2;camera.rotation.x=0;if(window.__asPlayerMesh)window.__asPlayerMesh.visible=false;}
  botMeshes.forEach(g=>world.remove(g));botMeshes.length=0;
  for(const b of s.bots){const g=makeSoldier(s.team==='blue'?0xb83232:0x2766a5);g.position.set(b.x,0,b.y);g.rotation.y=Math.atan2(s.py-b.y,s.px-b.x);world.add(g);botMeshes.push(g)}
  s.cars.forEach((car,i)=>{const g=carMeshes[i];if(!g)return;g.position.set(car.x,0,car.y);g.rotation.y=-(car.angle||0)+Math.PI/2});
