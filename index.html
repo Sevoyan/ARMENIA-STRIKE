@@ -215,19 +215,29 @@ function makeDistrictMap(id){
   const parts=id.split('-'),district=parts.slice(1,-1).join('-'),field=Number(parts.at(-1))||1;
   const names=['kentron','arabkir','ajapnyak','davitashen','avan','nor-nork','nork-marash','erebuni','shengavit','malatia','qanaker-zeytun','nubarashen'];
   const seed=(names.indexOf(district)+1)*17+field*11;
-  const rows=23,cols=30,a=Array.from({length:rows},(_,y)=>Array.from({length:cols},(_,x)=>(x===0||y===0||x===cols-1||y===rows-1)?'1':'0'));
-  // Շրջանի յուրաքանչյուր դաշտ ունի իր փողոցների և շենքերի դասավորությունը։
-  const vertical=3+(seed%3),horizontal=3+((seed>>2)%3);
-  for(let y=2;y<rows-2;y++)for(let x=2;x<cols-2;x++){
-    const bx=(x+seed%4)%vertical,by=(y+(seed>>1)%3)%horizontal;
-    if((bx===0&&by!==1)||(by===0&&bx!==1)){
-      if(Math.abs(x-Math.floor(cols/2))>3||Math.abs(y-Math.floor(rows/2))>3)a[y][x]='1';
-    }
+  const rows=23,cols=30,a=Array.from({length:rows},()=>Array(cols).fill('0'));
+  // Block-based Yerevan street plan: broad avenues, cross streets and enclosed courtyards.
+  const mainX=7+(seed%3),mainY=6+((seed>>2)%3);
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+    const edge=x===0||y===0||x===cols-1||y===rows-1;
+    const avenue=(x===mainX||x===mainX+1||y===mainY||y===mainY+1);
+    const cross=(x%8===0||y%7===0);
+    if(edge||avenue||cross)continue;
+    const bx=x%8,by=y%7;
+    // Building frontage around each block, with open inner courtyards and passages.
+    const frontage=(bx===1||bx===2||bx===5||bx===6)&&(by===1||by===2||by===4||by===5);
+    const courtyard=(bx>=3&&bx<=4&&by>=2&&by<=4);
+    if(frontage&&!courtyard)a[y][x]='1';
   }
-  // Բակերի բաց անցումներ և կենտրոնական մեկնարկային գոտի։
-  for(let x=2;x<cols-2;x++){a[Math.floor(rows/2)][x]='0';if((x+field)%4===0)a[Math.floor(rows/2)-1][x]='0';}
-  for(let y=2;y<rows-2;y++){a[y][Math.floor(cols/2)]='0';if((y+seed)%4===0)a[y][Math.floor(cols/2)-1]='0';}
-  for(let y=Math.floor(rows/2)-1;y<=Math.floor(rows/2)+1;y++)for(let x=Math.floor(cols/2)-1;x<=Math.floor(cols/2)+1;x++)a[y][x]='0';
+  // District-specific secondary streets and irregular local lanes.
+  if(['kentron','nork-marash'].includes(district)){
+    for(let y=3;y<rows-2;y+=9)for(let x=2;x<cols-2;x++)if((x+seed)%11<2)a[y][x]='0';
+  }else{
+    for(let x=4+(seed%4);x<cols-2;x+=10)for(let y=2;y<rows-2;y++)if((y+seed)%9<2)a[y][x]='0';
+  }
+  // Keep a connected, open central intersection for the player spawn.
+  const cy=Math.floor(rows/2),cx=Math.floor(cols/2);
+  for(let y=cy-2;y<=cy+2;y++)for(let x=cx-2;x<=cx+2;x++)a[y][x]='0';
   return a.map(row=>row.join(''));
 }
 let map=defaultMap;
