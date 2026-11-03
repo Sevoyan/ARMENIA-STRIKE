@@ -584,11 +584,11 @@ updateHud();
 <script>
 if(!window.THREE){window.__as3DError='Three.js CDN failed to load';document.getElementById('world3d').style.display='none';throw new Error(window.__as3DError);}
 const canvas=document.getElementById('world3d');
-let renderer=null,firstPersonWeapon=null,firstPersonWeaponType=-1;try{renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;}catch(err){canvas.style.display='none';window.__as3DError=String(err);const fallback=document.getElementById('game');fallback.style.display='block';fallback.style.position='fixed';fallback.style.inset='0';fallback.style.zIndex='1';fallback.style.background='#18232b';}
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x9aabb3);scene.fog=new THREE.Fog(0x9aabb3,18,42);
+let renderer=null,firstPersonWeapon=null,firstPersonWeaponType=-1;try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance',failIfMajorPerformanceCaveat:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;}catch(err){canvas.style.display='none';window.__as3DError=String(err);const fallback=document.getElementById('game');fallback.style.display='block';fallback.style.position='fixed';fallback.style.inset='0';fallback.style.zIndex='1';fallback.style.background='#18232b';}
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9aaeb8);scene.fog=new THREE.Fog(0x9aaeb8,24,68);
 const camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,100);
-scene.add(new THREE.HemisphereLight(0xdceaff,0x555044,2.0));
-const sun=new THREE.DirectionalLight(0xffe2b3,3.0);sun.position.set(-8,18,-5);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-24;sun.shadow.camera.right=24;sun.shadow.camera.top=24;sun.shadow.camera.bottom=-24;scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xdceaff,0x4a4034,1.35));
+const sun=new THREE.DirectionalLight(0xffe4c2,2.7);sun.position.set(-18,28,-14);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-38;sun.shadow.camera.right=38;sun.shadow.camera.top=38;sun.shadow.camera.bottom=-38;sun.shadow.bias=-0.00025;sun.shadow.normalBias=.025;sun.shadow.radius=3;scene.add(sun);const fillLight=new THREE.DirectionalLight(0xa9c9e8,.55);fillLight.position.set(18,10,16);scene.add(fillLight);
 const world=new THREE.Group();scene.add(world);
 const botMeshes=[],carMeshes=[];
 const mat=(color,roughness=.82,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
