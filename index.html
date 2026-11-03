@@ -123,7 +123,7 @@
 .player-preview-bottom{position:absolute;z-index:2;left:14px;right:14px;bottom:9px;display:flex;align-items:center;gap:7px;font-size:9px;letter-spacing:1.5px;color:#c3cbd0}.player-dot{width:7px;height:7px;border-radius:50%;background:var(--player-accent);box-shadow:0 0 10px var(--player-accent)}.player-level{margin-left:auto;color:#d4af37}
 @media(max-width:760px){.player-preview{min-height:135px;grid-template-columns:1fr 1fr;margin:8px 0}.soldier-avatar{height:132px}.player-preview-info{padding-top:8px}}
  .weapon-choice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.weapon-card{min-width:0;padding:11px 7px;border:1px solid #59636a;border-radius:10px;background:linear-gradient(145deg,#1c2931,#0c1319);color:#e8edf0;text-align:center;cursor:pointer}.weapon-card.selected{border:2px solid #d4af37;background:linear-gradient(145deg,#40371d,#17212a);box-shadow:0 0 15px #d4af3733}.weapon-card b{display:block;font-size:12px;letter-spacing:1px}.weapon-card small{display:block;margin-top:5px;color:#aeb9bf;font-size:9px;line-height:1.4}.weapon-card .weapon-icon{display:block;font-size:25px;margin-bottom:5px}@media(max-width:760px){.weapon-card{padding:9px 4px}.weapon-card b{font-size:10px}.weapon-card small{font-size:8px}}
-</style>
+.district-list[open]{display:block}.district-list[open] .district-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px 0 4px}.district-list[open] .mapbtn{min-height:42px;padding:10px 6px;font-size:11px;border:1px solid #d4af37;background:linear-gradient(135deg,#1b2a34,#101820);color:#f4d477;border-radius:7px}.district-list summary{font-weight:900;color:#f4d477;font-size:12px;letter-spacing:.5px}.menu-config{overflow:visible}#start{align-items:flex-start}</style>
 </head>
 <body>
 <canvas id="game"></canvas><canvas id="world3d"></canvas>
@@ -195,7 +195,7 @@
         <div id="missionInfo" class="selection-note">Նպատակ՝ ոչնչացնել 10 հակառակորդի</div>
         <label class="field-label">ՄԱՐՏԱԿԱՆ ԴԱՇՏ<select id="fieldSelect"></select></label><div id="fieldStatus" class="selection-note">Ընտրված է՝ Կենտրոն • Դաշտ 1</div>
         <button type="button" id="cascadePick" class="cascade-button">🏛️ ԸՆՏՐԵԼ ԵՐԵՎԱՆԻ ԿԱՍԿԱԴԸ</button>
-        <details class="district-list"><summary>Դիտել Երևանի բոլոր մարտական շրջանները</summary><div class="district-buttons">
+        <details class="district-list" open><summary>🗺️ ԸՆՏՐԵԼ ՔԱՐՏԵԶԸ — ԵՐԵՎԱՆԻ ՇՐՋԱՆՆԵՐ</summary><div class="district-buttons">
           <button class="startbtn mapbtn" data-map="district-kentron">ԿԵՆՏՐՈՆ</button><button class="startbtn mapbtn" data-map="district-arabkir">ԱՐԱԲԿԻՐ</button><button class="startbtn mapbtn" data-map="district-ajapnyak">ԱՋԱՓՆՅԱԿ</button><button class="startbtn mapbtn" data-map="district-davitashen">ԴԱՎԹԱՇԵՆ</button><button class="startbtn mapbtn" data-map="district-avan">ԱՎԱՆ</button><button class="startbtn mapbtn" data-map="district-nor-nork">ՆՈՐ ՆՈՐՔ</button><button class="startbtn mapbtn" data-map="district-nork-marash">ՆՈՐՔ-ՄԱՐԱՇ</button><button class="startbtn mapbtn" data-map="district-erebuni">ԷՐԵԲՈՒՆԻ</button><button class="startbtn mapbtn" data-map="district-shengavit">ՇԵՆԳԱՎԻԹ</button><button class="startbtn mapbtn" data-map="district-malatia">ՄԱԼԱԹԻԱ-ՍԵԲԱՍՏԻԱ</button><button class="startbtn mapbtn" data-map="district-qanaker-zeytun">ՔԱՆԱՔԵՌ-ԶԵՅԹՈՒՆ</button><button class="startbtn mapbtn" data-map="district-nubarashen">ՆՈՒԲԱՐԱՇԵՆ</button>
         </div></details>
       </section>
