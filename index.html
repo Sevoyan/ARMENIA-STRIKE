@@ -495,17 +495,31 @@ function update(dt){
     document.getElementById('play').textContent='ՇԱՐՈՒՆԱԿԵԼ';
     return;
   }
-  let forward=-joyY+(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0);
-  let side=joyX+(keys.KeyD?1:0)-(keys.KeyA?1:0);
-  let mag=Math.hypot(forward,side);
-  if(mag>1){forward/=mag;side/=mag}
+  let rawForward=-joyY+(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0);
+  let rawSide=joyX+(keys.KeyD?1:0)-(keys.KeyA?1:0);
+  const inputLength=Math.hypot(rawForward,rawSide);
+  if(inputLength>1){rawForward/=inputLength;rawSide/=inputLength}
+  const response=1-Math.exp(-dt*.014);
+  smoothForward+=(rawForward-smoothForward)*response;
+  smoothSide+=(rawSide-smoothSide)*response;
+  let forward=smoothForward,side=smoothSide;
   if(inCar){targetAng+=side*dt*.0034;side=0}
+  const turn=Math.atan2(Math.sin(targetAng-ang),Math.cos(targetAng-ang));
+  ang+=turn*(1-Math.exp(-dt*.018));
   let speed=dt*(inCar?0.026:0.0165);
-  let nx=px+(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed;
-  let ny=py+(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;
-  const radius=inCar?.82:.42;
-  if(!wall(nx+radius,py+radius)&&!wall(nx+radius,py-radius)&&!wall(nx-radius,py+radius)&&!wall(nx-radius,py-radius))px=nx;
-  if(!wall(px+radius,ny+radius)&&!wall(px+radius,ny-radius)&&!wall(px-radius,ny+radius)&&!wall(px-radius,ny-radius))py=ny;
+  let dx=(Math.cos(ang)*forward+Math.cos(ang+Math.PI/2)*side)*speed;
+  let dy=(Math.sin(ang)*forward+Math.sin(ang+Math.PI/2)*side)*speed;
+  const radius=inCar?.88:.48;
+  const canStand=(x,y)=>{
+    const checks=[[0,0],[radius,0],[-radius,0],[0,radius],[0,-radius],[radius*.7,radius*.7],[radius*.7,-radius*.7],[-radius*.7,radius*.7],[-radius*.7,-radius*.7]];
+    return checks.every(([ox,oy])=>!wall(x+ox,y+oy));
+  };
+  const steps=Math.max(1,Math.ceil(Math.max(Math.abs(dx),Math.abs(dy))/.12));
+  for(let n=0;n<steps;n++){
+    const sx=dx/steps,sy=dy/steps;
+    if(canStand(px+sx,py))px+=sx;
+    if(canStand(px,py+sy))py+=sy;
+  }
   if(inCar&&activeCar){activeCar.x=px;activeCar.y=py;activeCar.angle=ang;}
   if(!inCar){
     for(const car of cars){
