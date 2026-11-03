@@ -174,6 +174,9 @@
       <section class="config-section"><div class="section-caption"><span>01</span> ԸՆՏՐԻՐ ԹԻՄԸ</div>
         <div class="team-choice"><button class="team-card selected" id="blueTeam"><b>🔵</b><strong>ԿԱՊՈՒՅՏ ԹԻՄ</strong><small>BLUE SQUAD</small></button><button class="team-card" id="redTeam"><b>🔴</b><strong>ԿԱՐՄԻՐ ԹԻՄ</strong><small>RED SQUAD</small></button></div>
         <div id="teamStatus" class="selection-note">Ընտրված է՝ Կապույտ թիմ</div>
+        <label class="field-label" for="playerName">ԽԱՂԱՑՈՂԻ ԱՆՈՒՆԸ</label>
+        <input id="playerName" type="text" maxlength="16" autocomplete="nickname" placeholder="Գրիր քո անունը" value="PLAYER 01" style="width:100%;min-height:44px;padding:10px 13px;margin-top:7px;border:1px solid #b98e32;border-radius:8px;background:#101820;color:#fff;font-size:16px;box-sizing:border-box">
+        <div class="selection-note">Քո անունը կերևա խաղի ընթացքում։</div>
       </section>
       <section class="config-section"><div class="section-caption"><span>02</span> ԽԱՂԻ ՁԵՎԱՉԱՓԸ</div>
         <div class="mode-choice"><button class="startbtn modebtn active" data-mode="1">1 VS 1</button><button class="startbtn modebtn" data-mode="2">2 VS 2</button><button class="startbtn modebtn" data-mode="3">3 VS 3</button><button class="startbtn modebtn" data-mode="5">5 VS 5</button><button class="startbtn modebtn" data-mode="8">8 VS 8</button></div>
@@ -205,6 +208,9 @@
 <script>
 (()=>{const c=document.getElementById('game'),ctx=c.getContext('2d');let thirdPerson=false,selectedTeam='blue',selectedMode=1,selectedMission='eliminate',missionStart=0,missionDone=false,selectedMap='district-kentron-1',W,H,dpr,playing=false,px=3.5,py=3.5,ang=0,hp=100,ammo=30,reserve=90,kills=0,wave=1,gun=0,last=0,reloading=false,fireHeld=false,joyX=0,joyY=0,smoothForward=0,smoothSide=0,targetAng=0,drag=false,lastX=0,bots=[],corpses=[],enemyShots=[],grenades=[],explosions=[],grenadeCount=3,muzzle=0,damageFlash=0,inCar=false,activeCar=null,cars=[{x:5.5,y:1.5,color:'#b8bfc4'},{x:9.5,y:5.5,color:'#263d59'},{x:2.5,y:7.5,color:'#9a2929'}];
 const guns=[{name:'AK-47',mag:30,damage:34,rate:220},{name:'M4A1',mag:30,damage:29,rate:150},{name:'AWP',mag:5,damage:100,rate:650}];
+const playerNameInput=document.getElementById('playerName');
+let playerName=(localStorage.getItem('asPlayerName')||'PLAYER 01').slice(0,16);
+if(playerNameInput){playerNameInput.value=playerName;playerNameInput.addEventListener('input',()=>{playerName=playerNameInput.value.trim().slice(0,16)||'PLAYER 01';localStorage.setItem('asPlayerName',playerName);const tag=document.getElementById('playerTag');if(tag)tag.textContent=playerName;});}
 const defaultMap=['11111111111111111111','10000000000000000001','10111000110001110001','10000000000000000001','10100111000111001001','10000000000000000001','10001100111001100001','10000000000000000001','10110001100011001101','10000000000000000001','10001110011000111001','10000000000000000001','10110001100011001101','10000000000000000001','11111111111111111111'];
 const cascadeMap=['11111111111111111111','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','10000000000000000001','11111111111111111111'];
 const hraparakMap=['1111111111111111111111111111111111','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1000000000000000000000000000000001','1111111111111111111111111111111111'];
@@ -215,29 +221,27 @@ function makeDistrictMap(id){
   const parts=id.split('-'),district=parts.slice(1,-1).join('-'),field=Number(parts.at(-1))||1;
   const names=['kentron','arabkir','ajapnyak','davitashen','avan','nor-nork','nork-marash','erebuni','shengavit','malatia','qanaker-zeytun','nubarashen'];
   const seed=(names.indexOf(district)+1)*17+field*11;
-  const rows=23,cols=30,a=Array.from({length:rows},()=>Array(cols).fill('0'));
-  // Block-based Yerevan street plan: broad avenues, cross streets and enclosed courtyards.
-  const mainX=7+(seed%3),mainY=6+((seed>>2)%3);
+  const rows=38,cols=54,a=Array.from({length:rows},()=>Array(cols).fill('0'));
+  // Larger playable district: arterial roads, cross streets, block courtyards and varied local lanes.
+  const mainX=11+(seed%5),mainY=10+((seed>>2)%5);
   for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
     const edge=x===0||y===0||x===cols-1||y===rows-1;
-    const avenue=(x===mainX||x===mainX+1||y===mainY||y===mainY+1);
-    const cross=(x%8===0||y%7===0);
-    if(edge||avenue||cross)continue;
-    const bx=x%8,by=y%7;
-    // Building frontage around each block, with open inner courtyards and passages.
-    const frontage=(bx===1||bx===2||bx===5||bx===6)&&(by===1||by===2||by===4||by===5);
-    const courtyard=(bx>=3&&bx<=4&&by>=2&&by<=4);
+    const arterial=(x===mainX||x===mainX+1||x===mainX+2||y===mainY||y===mainY+1||y===mainY+2);
+    const cross=(x%10===0||y%9===0);
+    if(edge||arterial||cross)continue;
+    const bx=x%10,by=y%9;
+    const frontage=(bx===1||bx===2||bx===3||bx===6||bx===7||bx===8)&&(by===1||by===2||by===6||by===7);
+    const courtyard=(bx>=4&&bx<=5&&by>=3&&by<=5);
     if(frontage&&!courtyard)a[y][x]='1';
   }
-  // District-specific secondary streets and irregular local lanes.
+  // Secondary alleys and small open courtyards vary by district.
   if(['kentron','nork-marash'].includes(district)){
-    for(let y=3;y<rows-2;y+=9)for(let x=2;x<cols-2;x++)if((x+seed)%11<2)a[y][x]='0';
+    for(let y=4;y<rows-3;y+=11)for(let x=2;x<cols-2;x++)if((x+seed)%13<3)a[y][x]='0';
   }else{
-    for(let x=4+(seed%4);x<cols-2;x+=10)for(let y=2;y<rows-2;y++)if((y+seed)%9<2)a[y][x]='0';
+    for(let x=5+(seed%5);x<cols-2;x+=12)for(let y=2;y<rows-2;y++)if((y+seed)%11<3)a[y][x]='0';
   }
-  // Keep a connected, open central intersection for the player spawn.
   const cy=Math.floor(rows/2),cx=Math.floor(cols/2);
-  for(let y=cy-2;y<=cy+2;y++)for(let x=cx-2;x<=cx+2;x++)a[y][x]='0';
+  for(let y=cy-3;y<=cy+3;y++)for(let x=cx-3;x<=cx+3;x++)a[y][x]='0';
   return a.map(row=>row.join(''));
 }
 let map=defaultMap;
@@ -274,7 +278,7 @@ function drawMiniMap(){
  m.strokeStyle='#d4af37';m.lineWidth=2;m.strokeRect(1,1,mc.width-2,mc.height-2);
 }
 function start(){window.__asThirdPerson=false;const use3D=!!window.render3D&&!window.__as3DError;document.getElementById('world3d').style.display=use3D?'block':'none';c.style.display=use3D?'none':'block';c.style.position='fixed';c.style.inset='0';c.style.zIndex='1';thirdPerson=false;document.getElementById('viewToggle').textContent='3RD PERSON';document.getElementById('game-result')?.remove();const sourceMap=selectedMap==='cascade'?cascadeMap:selectedMap==='hraparak'?hraparakMap:selectedMap==='north-avenue'?northAvenueMap:selectedMap==='opera'?operaMap:selectedMap.startsWith('district-')?makeDistrictMap(selectedMap):defaultMap;map=expandMap(sourceMap);if(window.rebuild3DWorld)window.rebuild3DWorld(map,selectedMap);selectedMission=document.getElementById('missionSelect').value;missionStart=Date.now();missionDone=false;inCar=false;activeCar=null;document.getElementById('car').textContent='ENTER';document.getElementById('start').style.display='none';playing=true;smoothForward=smoothSide=0;targetAng=ang;hp=100;px=map[0].length/2+.5;py=selectedMap==='hraparak'?map.length/2+20.5:map.length/2+.5;ang=(selectedMap==='cascade'||selectedMap==='hraparak')?-Math.PI/2:0;cars.length=0;cars.push({x:px+2.5,y:py,color:'#b8bfc4',angle:0},{x:px-4,y:py,color:'#263d59',angle:0},{x:px+7,y:py+2,color:'#9a2929',angle:0},{x:px-7,y:py-2,color:'#68747d',angle:0},{x:px+2,y:py+5,color:'#9a2929',angle:0});ammo=guns[gun].mag;reserve=90;kills=0;wave=1;killStreak=0;lastKillAt=0;document.getElementById('killFeed').innerHTML='';document.getElementById('streakBadge').style.opacity='0';bots=[];corpses=[];enemyShots=[];grenades=[];explosions=[];grenadeCount=3;document.getElementById('grenadeCount').textContent=grenadeCount;document.getElementById('grenade').disabled=false;for(let i=0;i<selectedMode;i++)spawn();updateHud();requestAnimationFrame(loop)}
-function updateHud(){const mi=document.getElementById('missionInfo');if(mi){const goal=selectedMission==='eliminate'?'Ոչնչացնել 10 հակառակորդի':selectedMission==='survive'?'Գոյատևել 90 վայրկյան':selectedMission==='waves'?'Անցնել 3 ալիք':'Կատարել 5 խոցում';const progress=selectedMission==='eliminate'||selectedMission==='precision'?kills+(selectedMission==='precision'?' / 5':' / 10'):selectedMission==='waves'?Math.max(0,wave-1)+' / 3':Math.min(90,Math.floor((Date.now()-missionStart)/1000))+' / 90 վրկ';mi.textContent='Առաջադրանք՝ '+goal+' • '+progress;}document.getElementById('score').textContent=(selectedTeam==='blue'?'BLUE':'RED')+' • '+selectedMode+' VS '+selectedMode+' • KILLS '+kills;document.getElementById('hp').textContent='HP '+hp;document.getElementById('hp').style.color=hp<=30?'#ff5c52':hp<=60?'#ffd36b':'#ffffff';document.getElementById('ammo').textContent=ammo+' / '+reserve;document.getElementById('gun').textContent=guns[gun].name;document.getElementById('scopeOverlay').classList.toggle('active',gun===2);document.getElementById('wave').textContent=wave}
+function updateHud(){const mi=document.getElementById('missionInfo');if(mi){const goal=selectedMission==='eliminate'?'Ոչնչացնել 10 հակառակորդի':selectedMission==='survive'?'Գոյատևել 90 վայրկյան':selectedMission==='waves'?'Անցնել 3 ալիք':'Կատարել 5 խոցում';const progress=selectedMission==='eliminate'||selectedMission==='precision'?kills+(selectedMission==='precision'?' / 5':' / 10'):selectedMission==='waves'?Math.max(0,wave-1)+' / 3':Math.min(90,Math.floor((Date.now()-missionStart)/1000))+' / 90 վրկ';mi.textContent='Առաջադրանք՝ '+goal+' • '+progress;}document.getElementById('score').textContent=playerName+' • '+(selectedTeam==='blue'?'BLUE':'RED')+' • '+selectedMode+' VS '+selectedMode+' • KILLS '+kills;document.getElementById('hp').textContent='HP '+hp;document.getElementById('hp').style.color=hp<=30?'#ff5c52':hp<=60?'#ffd36b':'#ffffff';document.getElementById('ammo').textContent=ammo+' / '+reserve;document.getElementById('gun').textContent=guns[gun].name;document.getElementById('scopeOverlay').classList.toggle('active',gun===2);document.getElementById('wave').textContent=wave}
 function cast(a){let d=0;while(d<18){d+=.035;let x=px+Math.cos(a)*d,y=py+Math.sin(a)*d;if(wall(x,y))return d}return 18}
 function draw(){let horizon=H*.48;let sky=ctx.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#263b4a');sky.addColorStop(1,'#83908d');ctx.fillStyle=sky;ctx.fillRect(0,0,W,horizon);let floor=ctx.createLinearGradient(0,horizon,0,H);floor.addColorStop(0,'#55564f');floor.addColorStop(1,'#171b1c');ctx.fillStyle=floor;ctx.fillRect(0,horizon,W,H-horizon);
  // Երևանի ընտրված տեսարժան վայրի խաղային տեսարան
