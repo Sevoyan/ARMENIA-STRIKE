@@ -550,7 +550,7 @@ function update(dt){
   explosions=explosions.filter(x=>Date.now()-x.time<420);
   if((bots.length===0||kills>=selectedMode)&&playing){victory();return;}
 }
-function loop(t){if(!playing)return;window.__asGameState={px,py,ang,inCar,bots,cars,team:selectedTeam};let dt=Math.min(40,t-(loop.prev||t));loop.prev=t;update(dt);if(!playing)return;draw();drawMiniMap();if(window.render3D&&!window.__as3DError)window.render3D();requestAnimationFrame(loop)}
+function loop(t){if(!playing)return;window.__asGameState={px,py,ang,inCar,bots,cars,team:selectedTeam,gun};let dt=Math.min(40,t-(loop.prev||t));loop.prev=t;update(dt);if(!playing)return;draw();drawMiniMap();if(window.render3D&&!window.__as3DError)window.render3D();requestAnimationFrame(loop)}
 function showResult(title,message,buttonText){document.getElementById('game-result')?.remove();const box=document.createElement('div');box.id='game-result';box.style.cssText='position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);';const card=document.createElement('div');card.style.cssText='width:min(440px,100%);padding:32px 22px;text-align:center;border:2px solid #d4af37;border-radius:18px;background:#0b1118;color:#fff;box-shadow:0 15px 70px #000;';const h=document.createElement('h1');h.textContent=title;h.style.cssText='color:#e8c45c;font-size:clamp(30px,8vw,46px);margin:0 0 18px;letter-spacing:2px;';const p=document.createElement('p');p.textContent=message;p.style.cssText='color:#e1e5e8;font-size:17px;line-height:1.7;margin:0 0 24px;';const b=document.createElement('button');b.textContent=buttonText;b.style.cssText='padding:15px 28px;border:0;border-radius:9px;background:#d4af37;color:#111;font-size:17px;font-weight:900;cursor:pointer;';b.onclick=()=>{box.remove();start()};card.append(h,p,b);box.append(card);document.body.append(box)}
 function victory(){if(!playing)return;playing=false;missionDone=true;fireHeld=false;joyX=joyY=0;showResult('VICTORY!','Դու ոչնչացրեցիր բոլոր հակառակորդներին։ Արդյունք՝ '+kills+' հակառակորդ։','ՆՈՐԻՑ ԽԱՂԱԼ');sound('kill');updateHud()}
 function end(){if(!playing)return;playing=false;missionDone=true;fireHeld=false;joyX=joyY=0;showResult('GAME OVER','Քո արդյունքը՝ '+kills+' հակառակորդ։ Ալիք՝ '+wave,'ՆՈՐԻՑ ՍԿՍԵԼ')}
@@ -570,7 +570,7 @@ updateHud();
 <script>
 if(!window.THREE){window.__as3DError='Three.js CDN failed to load';document.getElementById('world3d').style.display='none';throw new Error(window.__as3DError);}
 const canvas=document.getElementById('world3d');
-let renderer=null;try{renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;}catch(err){canvas.style.display='none';window.__as3DError=String(err);const fallback=document.getElementById('game');fallback.style.display='block';fallback.style.position='fixed';fallback.style.inset='0';fallback.style.zIndex='1';fallback.style.background='#18232b';}
+let renderer=null,firstPersonWeapon=null,firstPersonWeaponType=-1;try{renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;}catch(err){canvas.style.display='none';window.__as3DError=String(err);const fallback=document.getElementById('game');fallback.style.display='block';fallback.style.position='fixed';fallback.style.inset='0';fallback.style.zIndex='1';fallback.style.background='#18232b';}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9aabb3);scene.fog=new THREE.Fog(0x9aabb3,18,42);
 const camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,100);
 scene.add(new THREE.HemisphereLight(0xdceaff,0x555044,2.0));
@@ -839,6 +839,22 @@ function build(map,which){
  for(let i=0;i<5;i++){const g=makeCar([0xb8bfc4,0x263d59,0x9a2929,0x68747d,0x9a2929][i]);world.add(g);carMeshes.push(g)}
 }
 window.rebuild3DWorld=build;
+function buildFirstPersonWeapon(type){
+ const group=new THREE.Group();
+ const metal=new THREE.MeshStandardMaterial({color:type===2?0x303943:0x252a2e,metalness:.78,roughness:.3});
+ const dark=new THREE.MeshStandardMaterial({color:0x111519,roughness:.8});
+ const wood=new THREE.MeshStandardMaterial({color:0x69452b,roughness:.75});
+ const add=(w,h,d,mat,x,y,z)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);o.position.set(x,y,z);group.add(o);return o};
+ add(.17,.16,.48,metal,0,0,0);
+ add(.075,.075,type===2?1.0:.72,metal,0,.025,-.52);
+ add(.11,.12,.22,dark,0,-.13,.22);
+ add(.075,.23,.12,wood,0,-.22,.12);
+ add(.045,.09,.17,dark,0,-.18,-.05);
+ if(type===2){add(.12,.12,.42,dark,0,.15,-.35);add(.045,.045,.38,metal,0,.15,-.36);add(.08,.08,.16,metal,0,-.14,-.35)}
+ else {add(.13,.12,.22,wood,0,-.02,.35);add(.1,.18,.12,dark,0,-.17,-.16)}
+ group.position.set(.34,-.29,-.62);group.rotation.set(-.08,-.12,-.04);
+ camera.add(group);return group;
+}
 window.render3D=()=>{
  if(!renderer)return;
  const game=document.getElementById('game');
