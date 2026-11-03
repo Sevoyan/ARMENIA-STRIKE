@@ -700,16 +700,27 @@ function makeCar(color){
  box(1.32,.38,2.55,paint,0,.55,0,g);
  box(1.27,.19,.72,paint,0,.78,-.86,g);box(1.25,.18,.55,paint,0,.76,1.0,g);
  box(1.35,.16,.16,darkPaint,0,.39,-1.31,g);box(1.35,.16,.16,darkPaint,0,.39,1.31,g);
- // Cabin with windshield, rear glass and side windows.
- box(1.04,.48,1.28,glassMat,0,.99,-.12,g);
- box(1.08,.07,.12,paint,0,1.25,-.73,g);box(1.08,.07,.12,paint,0,1.25,.5,g);
+ // Raised cabin, roof and individually framed glazing for a more believable sedan silhouette.
+ box(1.02,.43,1.22,glassMat,0,1.0,-.12,g);
+ box(.94,.11,.78,paint,0,1.26,-.1,g); // roof
+ box(1.02,.055,.12,darkPaint,0,1.27,-.73,g);
+ box(1.02,.055,.12,darkPaint,0,1.27,.5,g);
+ // Slanted front and rear windscreens.
+ const wind=box(1.0,.39,.035,glassMat,0,1.015,-.72,g);wind.rotation.x=-.18;
+ const rearWind=box(.96,.35,.035,glassMat,0,1.02,.53,g);rearWind.rotation.x=.2;
  for(const x of [-.54,.54]){
-   box(.055,.48,1.2,paint,x,.99,-.12,g);
-   box(.025,.32,.48,glass,x*1.02,1.0,-.43,g);
-   box(.025,.32,.48,glass,x*1.02,1.0,.18,g);
+   box(.055,.46,1.2,paint,x,.99,-.12,g);
+   box(.025,.31,.48,glassMat,x*1.02,1.015,-.43,g);
+   box(.025,.31,.48,glassMat,x*1.02,1.015,.18,g);
    box(.035,.035,.52,chrome,x*1.04,.72,-.12,g);
    box(.13,.09,.2,paint,x*1.08,.83,-.78,g);
    box(.12,.07,.2,paint,x*1.08,.83,.56,g);
+   // Side mirrors and door handles.
+   box(.16,.09,.13,paint,x*1.27,1.02,-.58,g);
+   box(.11,.035,.035,chrome,x*1.01,.91,-.22,g);
+   box(.11,.035,.035,chrome,x*1.01,.91,.34,g);
+   // Subtle door seams.
+   const seam=box(.012,.34,.012,darkPaint,x*1.005,.59,.08,g);
  }
  // Wheel arches and detailed wheels with metallic hubs.
  for(const x of [-.68,.68])for(const z of [-.82,.82]){
@@ -719,11 +730,23 @@ function makeCar(color){
    const cap=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,.18,12),darkPaint);cap.rotation.z=Math.PI/2;cap.position.set(x*1.02,.29,z);g.add(cap);
    for(let k=0;k<5;k++){const a=k*Math.PI*2/5;const spoke=box(.035,.035,.13,rim,x*1.025,.29+Math.sin(a)*.09,z+Math.cos(a)*.09,g);spoke.rotation.x=a;}
  }
- // Front grille, lamps, rear lamps, mirrors and door details.
- box(.58,.2,.035,darkPaint,0,.55,-1.29,g);box(.42,.055,.04,chrome,0,.56,-1.315,g);
- for(const x of [-.47,.47]){box(.24,.13,.045,head,x,.68,-1.3,g);box(.2,.12,.045,tail,x,.67,1.29,g);box(.12,.1,.12,paint,x*1.42,.91,-.46,g);}
+ // Front fascia, grille mesh effect, headlights, indicators and rear light clusters.
+ box(.62,.2,.035,darkPaint,0,.55,-1.3,g);
+ box(.43,.075,.04,chrome,0,.57,-1.325,g);
+ for(let k=0;k<7;k++)box(.025,.14,.012,chrome,-.19+k*.063,.55,-1.348,g);
+ for(const x of [-.47,.47]){
+   box(.24,.13,.045,head,x,.68,-1.3,g);
+   box(.2,.12,.045,tail,x,.67,1.29,g);
+   box(.08,.055,.025,chrome,x,.69,-1.33,g);
+   box(.12,.1,.12,paint,x*1.42,.91,-.46,g);
+   box(.13,.08,.035,darkPaint,x,.43,-1.33,g);
+ }
  for(const x of [-.35,.35])box(.2,.055,.035,chrome,x,.4,-1.31,g);
  box(.055,.42,.035,darkPaint,-.665,.62,-.1,g);box(.055,.42,.035,darkPaint,.665,.62,-.1,g);
+ // Lower diffuser, exhaust tips and license plate.
+ box(.9,.09,.08,darkPaint,0,.4,1.31,g);
+ for(const x of [-.42,.42]){const tip=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.08,12),chrome);tip.rotation.x=Math.PI/2;tip.position.set(x,.43,1.36);g.add(tip);}
+ box(.42,.13,.025,mat(0xe5e2d8),0,.51,1.37,g);
  g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
  return g;
 }
