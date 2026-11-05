@@ -632,7 +632,7 @@ updateHud();
 if(!window.THREE){window.__as3DError='Three.js CDN failed to load';document.getElementById('world3d').style.display='none';throw new Error(window.__as3DError);}
 const canvas=document.getElementById('world3d');
 let renderer=null,firstPersonWeapon=null,firstPersonWeaponType=-1;try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance',failIfMajorPerformanceCaveat:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<760?1.15:1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;}catch(err){canvas.style.display='none';window.__as3DError=String(err);const fallback=document.getElementById('game');fallback.style.display='block';fallback.style.position='fixed';fallback.style.inset='0';fallback.style.zIndex='1';fallback.style.background='#18232b';}
-const scene=new THREE.Scene();scene.background=new THREE.Color(0xb6c6ce);scene.fog=new THREE.Fog(0xb6c6ce,38,105);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xb9c8d0);scene.fog=new THREE.Fog(0xb9c8d0,55,145);
 const camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,100);
 scene.add(new THREE.HemisphereLight(0xdceaff,0x4a4034,1.35));
 const sun=new THREE.DirectionalLight(0xffe4c2,2.7);sun.position.set(-18,28,-14);sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<760?1024:1536,innerWidth<760?1024:1536);sun.shadow.camera.left=-38;sun.shadow.camera.right=38;sun.shadow.camera.top=38;sun.shadow.camera.bottom=-38;sun.shadow.bias=-0.00025;sun.shadow.normalBias=.025;sun.shadow.radius=3;scene.add(sun);const fillLight=new THREE.DirectionalLight(0xa9c9e8,.55);fillLight.position.set(18,10,16);scene.add(fillLight);
@@ -1015,6 +1015,78 @@ function build(map,which){
      const crown=new THREE.Mesh(new THREE.SphereGeometry(1.35,10,8),green);crown.position.set(x,3.15,z);crown.castShadow=true;world.add(crown);
    }
  }
+
+ // YEREVAN CITY PASS: street-facing stone facades, balconies, shopfronts and rooftop details.
+ const tuffShades=[0xb98d6c,0xc6a17f,0xa77d60,0xd0b18d,0x98806b].map(c=>mat(c,.88));
+ const frameMat=mat(0x5a5148,.72),glassNight=mat(0x344e59,.24,.28),iron=mat(0x343b3b,.58,.48),acMat=mat(0xbfc0b8,.82);
+ const addTree=(x,z,scale=1)=>{
+   const tg=new THREE.Group();tg.position.set(x,0,z);tg.scale.setScalar(scale);
+   const bark=new THREE.Mesh(new THREE.CylinderGeometry(.09,.14,1.55,8),trunk);bark.position.y=.78;bark.castShadow=true;tg.add(bark);
+   for(let q=0;q<5;q++){const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(.58+(q%2)*.12,1),leaves[q%leaves.length]);crown.position.set(Math.sin(q*2.4)*.28,1.55+(q%3)*.22,Math.cos(q*2.4)*.25);crown.castShadow=true;tg.add(crown)}
+   world.add(tg);
+ };
+ // Detailed windows on every facade that faces a street; recessed frames and projecting balconies.
+ for(let z=1;z<rows-1;z++)for(let x=1;x<cols-1;x++)if(map[z][x]==='1'){
+   const floors=2+((x*7+z*3)%3),height=2.7+((x*7+z*11)%5)*.38;
+   const sides=[{dx:0,dz:-1,px:x+.5,pz:z+.012,rot:0},{dx:0,dz:1,px:x+.5,pz:z+.988,rot:Math.PI},{dx:-1,dz:0,px:x+.012,pz:z+.5,rot:-Math.PI/2},{dx:1,dz:0,px:x+.988,pz:z+.5,rot:Math.PI/2}];
+   sides.forEach((side,si)=>{
+     if(map[z+side.dz]?.[x+side.dx]!=='0')return;
+     for(let f=0;f<floors;f++)for(let w=0;w<2;w++){
+       const yy=.78+f*.78,xx=side.px+(w-.5)*.43,zz=side.pz;
+       const pane=box(.29,.39,.045,glassNight,xx,yy,zz);pane.rotation.y=side.rot;
+       const sill=box(.38,.055,.11,frameMat,xx,yy-.23,zz);sill.rotation.y=side.rot;
+       if((x+z+f+w)%3===0){
+         const balcony=box(.47,.055,.42,sidewalkMat,xx,yy-.29,zz+Math.sin(side.rot)*.17);
+         const rail=box(.47,.22,.035,iron,xx,yy-.16,zz+Math.sin(side.rot)*.34);rail.rotation.y=side.rot;
+       }
+     }
+   });
+   // Rooftop parapet, water tank and occasional satellite dish.
+   if((x*3+z)%4===0){
+     box(.94,.16,.08,frameMat,x+.5,height+.08,z+.04);
+     const tank=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,.35,10),acMat);tank.position.set(x+.72,height+.28,z+.68);world.add(tank);
+   }
+   if((x+z)%5===0){
+     const ac=box(.25,.2,.18,acMat,x+.5,.55,z-.08);ac.rotation.y=((x+z)%2)*Math.PI/2;
+   }
+   // Ground-floor shop glazing and a dark sign band.
+   if((x+z)%4===0){
+     box(.7,.52,.045,glassNight,x+.5,.42,z-.018);
+     box(.78,.11,.06,tuffShades[(x+z)%tuffShades.length],x+.5,.78,z-.04);
+   }
+ }
+ // A recognisable distant Ararat twin-peak silhouette behind the city skyline.
+ const mountainMat=mat(0x777e80,.98),snowMat=mat(0xd8d9d3,.9);
+ const makePeak=(x,z,r,h)=>{
+   const geo=new THREE.ConeGeometry(r,h,7,1);const peak=new THREE.Mesh(geo,mountainMat);peak.position.set(x,h/2-1,z);peak.rotation.y=.18;world.add(peak);
+   const snow=new THREE.Mesh(new THREE.ConeGeometry(r*.32,h*.28,7,1),snowMat);snow.position.set(x,h*.86-1,z);world.add(snow);
+ };
+ makePeak(cols*.17,-24,15,18);makePeak(cols*.36,-27,9,12);
+ // Yerevan-style tree-lined boulevards, planters, benches and warm street lamps.
+ const planterMat=mat(0x9d927f),benchWood=mat(0x79583e),lampDark=mat(0x303536,.62,.35);
+ for(let z=4;z<rows-3;z+=6)for(let x=4;x<cols-3;x+=7){
+   if(map[z][x]!=='0'||Math.hypot(x-cols/2,z-rows/2)<5)continue;
+   addTree(x+.5,z+.5,.82+((x+z)%3)*.12);
+   box(.95,.22,.95,planterMat,x+.5,.12,z+.5);
+   box(.72,.07,.22,benchWood,x+.5,.42,z+1.15);
+   for(const dx of [-.27,.27])box(.06,.35,.06,iron,x+.5+dx,.24,z+1.15);
+ }
+ // Street lamps with curved-looking arm, emissive warm lantern and pole base.
+ const lampGlow=new THREE.MeshStandardMaterial({color:0xffd99a,emissive:0xffb95c,emissiveIntensity:.55,roughness:.3});
+ for(let z=3;z<rows-2;z+=8)for(let x=3;x<cols-2;x+=9)if(map[z][x]==='0'){
+   const pole=box(.09,3.65,.09,lampDark,x+.5,1.82,z+.5);
+   box(.48,.07,.07,lampDark,x+.68,3.55,z+.5);
+   box(.24,.14,.22,lampGlow,x+.86,3.48,z+.5);
+   const base=box(.25,.22,.25,iron,x+.5,.11,z+.5);
+ }
+ // Background low-rise residential skyline to avoid an abrupt map edge.
+ for(let n=0;n<14;n++){
+   const x=(n*13+5)%cols,z=-12-(n%4)*2,h=4+(n*7%5);
+   box(4.2,h,3.2,tuffShades[n%tuffShades.length],x,h/2,z);
+   box(4.3,.18,3.3,frameMat,x,h+.08,z);
+   for(let f=0;f<Math.floor(h/1.2);f++)for(let w=0;w<3;w++)box(.48,.55,.045,glassNight,x-1.3+w*1.3,.85+f*1.1,z-1.62);
+ }
+
  for(let i=0;i<5;i++){const g=makeCar([0xb8bfc4,0x263d59,0x9a2929,0x68747d,0x9a2929][i]);world.add(g);carMeshes.push(g)}
 }
 window.rebuild3DWorld=build;
