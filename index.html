@@ -676,6 +676,14 @@ function makeSoldier(color){
  part(torso,.34,.28,.23,strap,0,.61,.08);
  for(let i=0;i<3;i++){part(torso,.085,.13,.07,strap,-.13+i*.13,.22,-.25);part(torso,.06,.025,.012,edge,-.13+i*.13,.22,-.29)}
  part(torso,.13,.27,.15,armor,.3,.53,.04);
+ // Tactical field details: radio, shoulder patches, utility pouches and knee straps.
+ part(torso,.12,.2,.08,strap,-.29,.39,-.02);
+ part(torso,.08,.13,.035,edge,-.29,.39,-.075);
+ for(let pouch=0;pouch<4;pouch++){
+   part(torso,.075,.105,.065,strap,-.15+pouch*.1,.02,-.255);
+   part(torso,.065,.018,.012,edge,-.15+pouch*.1,.065,-.291);
+ }
+ part(torso,.12,.13,.06,armor,.3,.22,-.02);
  // Helmeted head and neck.
  part(torso,.15,.16,.15,skin,0,.69,0);
  const head=new THREE.Mesh(new THREE.SphereGeometry(.17,16,12),skin);head.position.set(0,.86,0);head.castShadow=true;torso.add(head);
@@ -757,6 +765,15 @@ function makeCar(color){
    for(let k=0;k<5;k++){const a=k*Math.PI*2/5;const spoke=box(.035,.035,.13,rim,0,Math.sin(a)*.09,Math.cos(a)*.09,wheelRig);spoke.rotation.x=a;}
  wheelRig.userData.front=z<0;wheelRig.userData.baseY=.29;wheels.push(wheelRig);
  }
+ // Fine exterior details: mirrors, door handles, side indicators and window trim.
+ for(const x of [-.68,.68]){
+   box(.09,.045,.055,head,x,.69,-.91,g);
+   box(.055,.12,.055,darkPaint,x,.58,-.22,g);
+ }
+ for(const z of [-.43,.18]){
+   box(.035,.055,.035,chrome,-.665,.94,z,g);
+   box(.035,.055,.035,chrome,.665,.94,z,g);
+ }
  // Front fascia, grille mesh effect, headlights, indicators and rear light clusters.
  box(.62,.2,.035,darkPaint,0,.55,-1.3,g);
  box(.43,.075,.04,chrome,0,.57,-1.325,g);
@@ -800,6 +817,11 @@ function build(map,which){
    if((map[z-1]?.[x]==='1'||map[z+1]?.[x]==='1')&&(x+z)%3===0)box(.96,.045,.16,curb,x+.5,.025,z+.5);
  }
 
+ const districtKey=which.split('-')[1]||'kentron';
+ const facadePalette={kentron:[0xb78d69,0xc4a17c,0x98745c,0xd0b18b],arabkir:[0xb8b3a8,0x9b9b91,0xc5bcae,0x777f80],ajapnyak:[0xc2b9a8,0xaaa18f,0xd0c5b2,0x8c918d],davitashen:[0xb9b5a9,0x9da7a5,0xc8c3b7,0x858f91],avan:[0xc5b9a4,0xa7a18f,0xd0c4ad,0x858b82],'nor-nork':[0xc5b69e,0xaaa28e,0xd0c2a8,0x858d88],'nork-marash':[0xc2a98d,0xa98c70,0xd2b99a,0x8d7968],erebuni:[0xb99b79,0x9b8065,0xcab08d,0x827363],shengavit:[0xb3a58e,0x938b7c,0xc3b49a,0x7d817c],malatia:[0xc1b49e,0xa79d8b,0xd0c2aa,0x85877f],'qanaker-zeytun':[0xbeb49f,0xa49c8d,0xcfc2aa,0x858b83],nubarashen:[0xc6b79e,0xaaa18d,0xd2c3a9,0x858879]};
+ const facades=(facadePalette[districtKey]||facadePalette.kentron).map(c=>mat(c));
+ const windowMat=mat(0x344e59,.25,.35),balconyMat=mat(0x555b5a,.65,.35),sidewalkMat=mat(0x918d82);
+
  for(let z=0;z<rows;z++)for(let x=0;x<cols;x++)if(map[z][x]==='1'){
    const h=3.1+((x*7+z*11)%7)*.42,m=concrete[(x*3+z)%concrete.length];
    // More varied apartment blocks: recessed facades, roof cornices, balconies and taller silhouettes.
@@ -820,10 +842,6 @@ function build(map,which){
  }
  // Street lamps and Armenian-city inspired warm details.
  // More recognizable Yerevan streets: curbs, lane markings, facades, balconies and courtyards.
- const districtKey=which.split('-')[1]||'kentron';
- const facadePalette={kentron:[0xb78d69,0xc4a17c,0x98745c,0xd0b18b],arabkir:[0xb8b3a8,0x9b9b91,0xc5bcae,0x777f80],ajapnyak:[0xc2b9a8,0xaaa18f,0xd0c5b2,0x8c918d],davitashen:[0xb9b5a9,0x9da7a5,0xc8c3b7,0x858f91],avan:[0xc5b9a4,0xa7a18f,0xd0c4ad,0x858b82],'nor-nork':[0xc5b69e,0xaaa28e,0xd0c2a8,0x858d88],'nork-marash':[0xc2a98d,0xa98c70,0xd2b99a,0x8d7968],erebuni:[0xb99b79,0x9b8065,0xcab08d,0x827363],shengavit:[0xb3a58e,0x938b7c,0xc3b49a,0x7d817c],malatia:[0xc1b49e,0xa79d8b,0xd0c2aa,0x85877f],'qanaker-zeytun':[0xbeb49f,0xa49c8d,0xcfc2aa,0x858b83],nubarashen:[0xc6b79e,0xaaa18d,0xd2c3a9,0x858879]};
- const facades=(facadePalette[districtKey]||facadePalette.kentron).map(c=>mat(c));
- const windowMat=mat(0x344e59,.25,.35),balconyMat=mat(0x555b5a,.65,.35),sidewalkMat=mat(0x918d82);
  for(let z=1;z<rows-1;z++)for(let x=1;x<cols-1;x++)if(map[z][x]==='0'&&((map[z-1]?.[x]==='1')||(map[z+1]?.[x]==='1'))&&(x+z)%2===0)box(.92,.035,.18,sidewalkMat,x+.5,.015,z+.5);
  for(let z=1;z<rows-1;z++)for(let x=1;x<cols-1;x++)if(map[z][x]==='1'&&(x+z)%2===0){
    const h=2.8+((x*7+z*11)%4)*.42,front=z+.02;
