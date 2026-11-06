@@ -782,12 +782,17 @@ function build(map,which){
  clearWorld();botMeshes.length=0;carMeshes.length=0;
  const rows=map.length,cols=map[0].length;
  // Continuous asphalt, subtle road grain and a street grid with realistic lane markings.
- const asphalt=mat(0x343a3c,.96,.04),lanePaint=mat(0xd5c9a7),curb=mat(0xaaa394),sidewalk=mat(0x827f78);
+ const asphalt=mat(0x343a3c,.98,.015),lanePaint=mat(0xd5c9a7),curb=mat(0xaaa394),sidewalk=mat(0x827f78);
+ // Procedural asphalt grain: subtle aggregate speckles and patch variation across the full 3D road surface.
+ const roadCanvas=document.createElement('canvas');roadCanvas.width=roadCanvas.height=256;const roadCtx=roadCanvas.getContext('2d');roadCtx.fillStyle='#343a3c';roadCtx.fillRect(0,0,256,256);let roadSeed=which.length*913+rows*17+cols;const randRoad=()=>{roadSeed=(roadSeed*1664525+1013904223)>>>0;return roadSeed/4294967296;};for(let n=0;n<5200;n++){const v=randRoad(),x=randRoad()*256,y=randRoad()*256,r=.35+randRoad()*1.35;roadCtx.fillStyle=v>.52?'rgba(175,180,177,.13)':'rgba(5,9,12,.19)';roadCtx.fillRect(x,y,r,r);}const roadTexture=new THREE.CanvasTexture(roadCanvas);roadTexture.wrapS=roadTexture.wrapT=THREE.RepeatWrapping;roadTexture.repeat.set(Math.max(1,cols/8),Math.max(1,rows/8));roadTexture.colorSpace=THREE.SRGBColorSpace;roadTexture.anisotropy=renderer.capabilities.getMaxAnisotropy();asphalt.map=roadTexture;asphalt.needsUpdate=true;
  box(cols,.2,rows,asphalt,cols/2,-.12,rows/2);
  const grid=new THREE.GridHelper(Math.max(cols,rows),Math.max(cols,rows),0x454b4c,0x454b4c);grid.position.set(cols/2,-.015,rows/2);grid.material.opacity=.13;grid.material.transparent=true;world.add(grid);
  // Mark road edges and broken center lines on long open streets.
  for(let z=2;z<rows-2;z++)for(let x=2;x<cols-2;x++){
    if(map[z][x]!=='0')continue;
+   // Zebra crossings at wider intersections, with evenly spaced raised-looking white stripes.
+   const horizontalRoad=map[z]?.[x-1]==='0'&&map[z]?.[x+1]==='0',verticalRoad=map[z-1]?.[x]==='0'&&map[z+1]?.[x]==='0';
+   if(horizontalRoad&&verticalRoad&&x%12===0&&z%10===0){for(let stripe=0;stripe<6;stripe++){box(.18,.018,.78,mat(0xd8d8d2),x-1.05+stripe*.38,.018,z+.5);}}
    const vertical=map[z-1]?.[x]==='0'&&map[z+1]?.[x]==='0'&&(map[z]?.[x-1]==='1'||map[z]?.[x+1]==='1');
    const horizontal=map[z]?.[x-1]==='0'&&map[z]?.[x+1]==='0'&&(map[z-1]?.[x]==='1'||map[z+1]?.[x]==='1');
    if(vertical&&x%5===0)box(.045,.012,.42,lanePaint,x+.5,.012,z+.5);
