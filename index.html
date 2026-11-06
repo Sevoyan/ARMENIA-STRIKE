@@ -232,17 +232,17 @@ function makeDistrictMap(id){
   const parts=id.split('-'),district=parts.slice(1,-1).join('-'),field=Number(parts.at(-1))||1;
   const names=['kentron','arabkir','ajapnyak','davitashen','avan','nor-nork','nork-marash','erebuni','shengavit','malatia','qanaker-zeytun','nubarashen'];
   const seed=(names.indexOf(district)+1)*17+field*11;
-  const rows=38,cols=54,a=Array.from({length:rows},()=>Array(cols).fill('0'));
-  // Larger playable district: arterial roads, cross streets, block courtyards and varied local lanes.
-  const mainX=11+(seed%5),mainY=10+((seed>>2)%5);
+  const rows=48,cols=68,a=Array.from({length:rows},()=>Array(cols).fill('0'));
+  // Expanded playable Yerevan district with a wider central boulevard, side streets and larger residential blocks.
+  const mainX=19+(seed%7),mainY=17+((seed>>2)%7);
   for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
     const edge=x===0||y===0||x===cols-1||y===rows-1;
-    const arterial=(x===mainX||x===mainX+1||x===mainX+2||y===mainY||y===mainY+1||y===mainY+2);
-    const cross=(x%10===0||y%9===0);
-    if(edge||arterial||cross)continue;
-    const bx=x%10,by=y%9;
-    const frontage=(bx===1||bx===2||bx===3||bx===6||bx===7||bx===8)&&(by===1||by===2||by===6||by===7);
-    const courtyard=(bx>=4&&bx<=5&&by>=3&&by<=5);
+    const boulevard=(x>=mainX&&x<=mainX+2)||(y>=mainY&&y<=mainY+2);
+    const cross=(x%12===0||y%10===0);
+    if(edge||boulevard||cross)continue;
+    const bx=x%12,by=y%10;
+    const frontage=(bx===1||bx===2||bx===3||bx===4||bx===7||bx===8||bx===9||bx===10)&&(by===1||by===2||by===3||by===7||by===8);
+    const courtyard=(bx>=5&&bx<=6&&by>=4&&by<=6);
     if(frontage&&!courtyard)a[y][x]='1';
   }
   // Secondary alleys and small open courtyards vary by district.
@@ -796,12 +796,22 @@ function build(map,which){
  }
 
  for(let z=0;z<rows;z++)for(let x=0;x<cols;x++)if(map[z][x]==='1'){
-   const h=2.7+((x*7+z*11)%5)*.38,m=concrete[(x*3+z)%concrete.length];
-   // Slightly varied building footprints, layered facades, recessed windows and roof parapets.
-   const inset=((x+z)%4)*.035,w=.91-inset,d=.91-inset;
+   const h=3.1+((x*7+z*11)%7)*.42,m=concrete[(x*3+z)%concrete.length];
+   // More varied apartment blocks: recessed facades, roof cornices, balconies and taller silhouettes.
+   const inset=((x+z)%5)*.055,w=.88-inset,d=.88-inset;
    box(w,h,d,m,x+.5,h/2,z+.5);
-   box(w+.035,.12,d+.035,facades[(x+z)%facades.length]||m,x+.5,h-.04,z+.5);
-   if((x+z)%3===0){for(let floor=0;floor<Math.floor(h/1.05);floor++){const yy=.72+floor*.82;box(.25,.34,.035,glass,x+.28,yy,z-.012);box(.25,.34,.035,glass,x+.72,yy,z-.012);box(.34,.035,.08,sidewalk,x+.5,yy-.2,z-.045);}}
+   box(w+.055,.16,d+.055,facades[(x+z)%facades.length]||m,x+.5,h-.055,z+.5);
+   box(w+.09,.09,d+.09,mat(0x77736a),x+.5,h+.035,z+.5);
+   const floors=Math.floor(h/1.05);
+   for(let floor=0;floor<floors;floor++){
+     const yy=.72+floor*.82,winW=.22+((x+floor)%2)*.035;
+     for(const wx of [.25,.72]){
+       box(winW,.36,.04,glass,wx+x,yy,z-.018);
+       box(winW+.035,.035,.075,sidewalk,wx+x,yy-.205,z-.045);
+       if((x+z+floor)%3===0){box(winW+.08,.035,.11,balconyMat,wx+x,yy-.19,z-.09);box(.035,.16,.035,balconyMat,wx+x-winW*.48,yy-.11,z-.14);box(.035,.16,.035,balconyMat,wx+x+winW*.48,yy-.11,z-.14);}
+     }
+   }
+   if((x+z)%4===0){box(.22,.18,.22,mat(0x77766e),x+.5,h+.15,z+.5);box(.34,.035,.34,mat(0x555b59),x+.5,h+.25,z+.5);}
  }
  // Street lamps and Armenian-city inspired warm details.
  // More recognizable Yerevan streets: curbs, lane markings, facades, balconies and courtyards.
