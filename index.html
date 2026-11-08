@@ -507,19 +507,14 @@ if(damageFlash>0){ctx.fillStyle='rgba(180,0,0,'+(damageFlash/18*.25)+')';ctx.fil
  for(let n=0;n<34;n++){let gx=(n*197+now*.013)%W,gy=(n*113+now*.021)%H;ctx.fillRect(gx,gy,1,1)}
  ctx.restore();
 }
-function shoot(){if(!playing||reloading||Date.now()-last<guns[gun].rate)return;sound(gun===1?'m4':'shot');if(ammo<=0){reload();return}last=Date.now();ammo--;muzzle=3;let best=null,bd=99;for(const b of bots){let d=Math.hypot(b.x-px,b.y-py),a=Math.atan2(b.y-py,b.x-px),diff=Math.abs(Math.atan2(Math.sin(a-ang),Math.cos(a-ang)));if(diff<(gun===2?.032:.075)&&d<cast(a)+.3&&d<bd){best=b;bd=d}}if(best){best.h-=guns[gun].damage;best.hit=5;if(best.h<=0){corpses.push({x:best.x,y:best.y,time:Date.now()});bots=bots.filter(b=>b!==best);kills++;sound('kill');addKillFeed();}}if(bots.length===0||kills>=selectedMode){victory();return}if(!missionDone&&playing&&((selectedMission==='eliminate'&&kills>=10)||(selectedMission==='precision'&&kills>=5)||(selectedMission==='waves'&&wave>=4)||(selectedMission==='survive'&&Date.now()-missionStart>=90000))){missionDone=true;playing=false;document.querySelector('.menu-brand h1').textContent='MISSION COMPLETE';document.querySelector('.menu-brand p').textContent='Առաջադրանքը հաջողությամբ կատարված է։';document.getElementById('start').style.display='flex';document.getElementById('play').textContent='ՇԱՐՈՒՆԱԿԵԼ';}updateHud()}
+function shoot(){if(!playing||reloading||Date.now()-last<guns[gun].rate)return;sound(gun===1?'m4':'shot');if(ammo<=0){reload();return}last=Date.now();ammo--;muzzle=3;let best=null,bd=99;for(const b of bots){let d=Math.hypot(b.x-px,b.y-py),a=Math.atan2(b.y-py,b.x-px),diff=Math.abs(Math.atan2(Math.sin(a-ang),Math.cos(a-ang)));if(diff<(gun===2?.032:.075)&&d<cast(a)+.3&&d<bd){best=b;bd=d}}if(best){best.h-=guns[gun].damage;best.hit=5;if(best.h<=0){corpses.push({x:best.x,y:best.y,time:Date.now()});bots=bots.filter(b=>b!==best);kills++;sound('kill');addKillFeed();}}if(bots.length===0)handleSquadDefeat();updateHud()}
 function throwGrenade(){if(!playing||grenadeCount<=0)return;grenadeCount--;document.getElementById('grenadeCount').textContent=grenadeCount;document.getElementById('grenade').disabled=true;sound('switch');grenades.push({x:px,y:py,tx:px+Math.cos(ang)*3.1,ty:py+Math.sin(ang)*3.1,time:Date.now(),fuse:720});setTimeout(()=>{document.getElementById('grenade').disabled=false},900)}
-function explodeGrenade(g){explosions.push({x:g.tx,y:g.ty,time:Date.now()});sound('kill');for(const b of [...bots]){const d=Math.hypot(b.x-g.tx,b.y-g.ty);if(d<2.25){b.h-=Math.round(145*(1-d/3.2));b.hit=8;if(b.h<=0){corpses.push({x:b.x,y:b.y,time:Date.now()});bots=bots.filter(x=>x!==b);kills++;sound('kill');addKillFeed()}}}if(bots.length===0||kills>=selectedMode){victory();return}updateHud()}
+function explodeGrenade(g){explosions.push({x:g.tx,y:g.ty,time:Date.now()});sound('kill');for(const b of [...bots]){const d=Math.hypot(b.x-g.tx,b.y-g.ty);if(d<2.25){b.h-=Math.round(145*(1-d/3.2));b.hit=8;if(b.h<=0){corpses.push({x:b.x,y:b.y,time:Date.now()});bots=bots.filter(x=>x!==b);kills++;sound('kill');addKillFeed()}}}if(bots.length===0)handleSquadDefeat();updateHud()}
 function reload(){if(reloading||ammo===guns[gun].mag||reserve<=0)return;sound('reload');reloading=true;document.getElementById('reload').textContent='...';setTimeout(()=>{let n=Math.min(guns[gun].mag-ammo,reserve);ammo+=n;reserve-=n;reloading=false;document.getElementById('reload').textContent='RELOAD';updateHud()},1150)}
 const keys={};addEventListener('keydown',e=>{keys[e.code]=true});addEventListener('keyup',e=>{keys[e.code]=false});addEventListener('blur',()=>{Object.keys(keys).forEach(k=>keys[k]=false)});
 function update(dt){
   if(!missionDone&&selectedMission==='survive'&&Date.now()-missionStart>=90000){
-    missionDone=true;playing=false;
-    document.querySelector('.menu-brand h1').textContent='MISSION COMPLETE';
-    document.querySelector('.menu-brand p').textContent='Դու գոյատևեցիր 90 վայրկյան։';
-    document.getElementById('start').style.display='flex';
-    document.getElementById('play').textContent='ՇԱՐՈՒՆԱԿԵԼ';
-    return;
+    missionComplete('Դու գոյատևեցիր 90 վայրկյան։');return;
   }
   let rawForward=-joyY+(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0);
   let rawSide=joyX+(keys.KeyD?1:0)-(keys.KeyA?1:0);
@@ -601,11 +596,32 @@ function update(dt){
     return true;
   });
   explosions=explosions.filter(x=>Date.now()-x.time<420);
-  if((bots.length===0||kills>=selectedMode)&&playing){victory();return;}
+  if(bots.length===0&&playing){handleSquadDefeat();return;}
 }
 function loop(t){if(!playing)return;window.__asGameState={px,py,ang,inCar,bots,cars,team:selectedTeam,gun,elevation:playerElevation,skin:skinColors[playerSkin]||skinColors.blue,firingAt:last,deadAt:0};let dt=Math.min(40,t-(loop.prev||t));loop.prev=t;update(dt);if(!playing)return;draw();drawMiniMap();if(window.render3D&&!window.__as3DError){try{window.render3D()}catch(err){console.error('3D render failed:',err);window.__as3DError=true;document.getElementById('world3d').style.display='none';c.style.display='block';}}requestAnimationFrame(loop)}
 function showResult(title,message,buttonText){document.getElementById('game-result')?.remove();const box=document.createElement('div');box.id='game-result';box.style.cssText='position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);';const card=document.createElement('div');card.style.cssText='width:min(440px,100%);padding:32px 22px;text-align:center;border:2px solid #d4af37;border-radius:18px;background:#0b1118;color:#fff;box-shadow:0 15px 70px #000;';const h=document.createElement('h1');h.textContent=title;h.style.cssText='color:#e8c45c;font-size:clamp(30px,8vw,46px);margin:0 0 18px;letter-spacing:2px;';const p=document.createElement('p');p.textContent=message;p.style.cssText='color:#e1e5e8;font-size:17px;line-height:1.7;margin:0 0 24px;';const b=document.createElement('button');b.textContent=buttonText;b.style.cssText='padding:15px 28px;border:0;border-radius:9px;background:#d4af37;color:#111;font-size:17px;font-weight:900;cursor:pointer;';b.onclick=()=>{box.remove();start()};card.append(h,p,b);box.append(card);document.body.append(box)}
 function victory(){if(!playing)return;playing=false;missionDone=true;fireHeld=false;joyX=joyY=0;showResult('VICTORY!','Դու ոչնչացրեցիր բոլոր հակառակորդներին։ Արդյունք՝ '+kills+' հակառակորդ։','ՆՈՐԻՑ ԽԱՂԱԼ');sound('kill');updateHud()}
+function missionComplete(message){
+ if(!playing)return;
+ playing=false;missionDone=true;fireHeld=false;joyX=joyY=0;
+ showResult('MISSION COMPLETE',message+' • Արդյունք՝ '+kills+' խոցում։','ՆՈՐԻՑ ԽԱՂԱԼ');
+ sound('kill');updateHud();
+}
+function handleSquadDefeat(){
+ if(!playing||bots.length)return;
+ if(selectedMission==='waves'){
+   if(wave>=3){missionComplete('Դու անցար բոլոր 3 ալիքները։');return;}
+   wave++;
+   for(let i=0;i<Math.min(12,selectedMode+wave*2);i++)spawn();
+   updateHud();return;
+ }
+ if(selectedMission==='eliminate'&&kills>=10){missionComplete('Դու ոչնչացրեցիր 10 հակառակորդի։');return;}
+ if(selectedMission==='precision'&&kills>=5){missionComplete('Դու կատարեցիր 5 խոցում։');return;}
+ if(selectedMission==='survive'&&Date.now()-missionStart>=90000){missionComplete('Դու գոյատևեցիր 90 վայրկյան։');return;}
+ const count=Math.max(2,Math.min(8,selectedMode));
+ for(let i=0;i<count;i++)spawn();
+ updateHud();
+}
 function end(){if(!playing)return;playing=false;missionDone=true;fireHeld=false;joyX=joyY=0;if(window.__asGameState){window.__asGameState.deadAt=performance.now();window.__asGameState.dead=true;}showResult('GAME OVER','Քո արդյունքը՝ '+kills+' հակառակորդ։ Ալիք՝ '+wave,'ՆՈՐԻՑ ՍԿՍԵԼ');if(window.render3D&&!window.__as3DError){const fallFrame=()=>{if(window.__asGameState?.dead&&performance.now()-window.__asGameState.deadAt<850){window.render3D();requestAnimationFrame(fallFrame);}};requestAnimationFrame(fallFrame);}}
 const fieldNames=['Կենտրոնական փողոցներ','Բակերի մարտադաշտ','Շենքերի միջանցք','Հին թաղամաս','Գիշերային գոտի'];
 const districtNames={'kentron':'Կենտրոն','arabkir':'Արաբկիր','ajapnyak':'Աջափնյակ','davitashen':'Դավթաշեն','avan':'Ավան','nor-nork':'Նոր Նորք','nork-marash':'Նորք-Մարաշ','erebuni':'Էրեբունի','shengavit':'Շենգավիթ','malatia':'Մալաթիա-Սեբաստիա','qanaker-zeytun':'Քանաքեռ-Զեյթուն','nubarashen':'Նուբարաշեն'};
